@@ -24,52 +24,19 @@ class GameScene: SKScene {
     var currentBoard: Board!
     
     override func didMove(to view: SKView) {
-        buildBasicBoard()
-        
-        // create objects
-        var objects: [ChessPiece] = []
         
         // create board
-        currentBoard = Board(at: origin, objects: objects)
+        origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
+        currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
+        currentBoard.buildBasicBoard()
+        currentBoard.setTraditionally()
+        currentBoard.setPieceSizeAndPosition()
         
-        for obj in currentBoard.allObjects {
-            addChild(obj.sprite)
+        for tile in currentBoard.tiles.values {
+            addChild(tile)
         }
-
-
-    }
-    
-    func buildBasicBoard() {
-        var white = true
-
-        tileSize = screenSize.width / 4
-        origin = CGPoint(x:-screenSize.width * 0.875, y:-screenSize.height * 0.5)
-        currentPoint = origin
-        
-        
-        for rank in 1...8 {
-            for file in "abcdefgh" {
-                var filename = ""
-                if white {
-                    filename = "white_tile"
-                } else {
-                    filename = "black_tile"
-                }
-                
-                let sprite = SKSpriteNode(imageNamed: filename)
-                sprite.position = currentPoint
-                sprite.size = CGSize(width: tileSize, height: tileSize)
-                sprite.zRotation = CGFloat(Double.pi)/2.0 * CGFloat(Double(Int.random(in: 0...3)))
-                currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
-                white = !white
-                sprite.name = "\(file)\(rank)"
-                self.addChild(sprite)
-            }
-            
-            currentPoint = CGPoint(x: origin.x, y: currentPoint.y + tileSize)
-            white = !white
-            
-            
+        for obj in currentBoard.allObjects{
+            addChild(obj.sprite)
         }
     }
     

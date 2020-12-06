@@ -42,14 +42,19 @@ class ChessObject {
     var sprite: SKSpriteNode!
     var type = PieceType.OBJECT
     
+    //var obstructing = true // Could be used to make objects solid or not (dropped torch vs wall)
+    
     init(at pos: Position, imageName: String) {
         self.coordinates = pos
-        self.sprite = SKSpriteNode(fileNamed: imageName)
+        self.sprite = SKSpriteNode(imageNamed: imageName)
+        self.sprite.name = imageName
     }
     
     init(at pos: Position, imageName: String, type: PieceType) {
         self.coordinates = pos
-        self.sprite = SKSpriteNode(fileNamed: imageName)
+        self.type = type
+        self.sprite = SKSpriteNode(imageNamed: imageName)
+        self.sprite.name = imageName
     }
     
     func moveObject(to coord: Position, point: CGPoint) {

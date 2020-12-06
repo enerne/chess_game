@@ -13,7 +13,8 @@ class ChessPiece : ChessObject{
     static let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight", .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
     
     let faction : Faction
-    let pieceName : String
+    //type stored by ObjectPiece
+    let pieceName : String //Spritename generated from faction and type
     
     init(at pos: Position, faction: Faction, type: PieceType) {
         self.faction = faction
@@ -21,5 +22,9 @@ class ChessPiece : ChessObject{
         //Should add a default value to this
         pieceName = ChessPiece.factionSprites[faction]!+ChessPiece.pieceSprites[type]!
         super.init(at: pos, imageName: pieceName, type: type)
+        
+        if sprite == nil {
+            print(pieceName,"SPRITE FAILED TO INITIALIZE")
+        }
     }
 }
