@@ -15,15 +15,15 @@ struct Position {
     var height = 0
 }
 
-//enum PieceType {
-//    var type = PAWN,
-//    BISHOP,
-//    KNIGHT,
-//    ROOK,
-//    QUEEN,
-//    KING,
-//    OBJECT
-//}
+enum PieceType {
+    case PAWN,
+    BISHOP,
+    KNIGHT,
+    ROOK,
+    QUEEN,
+    KING,
+    OBJECT
+}
 
 class ChessObject {
     var coordinates = Position()

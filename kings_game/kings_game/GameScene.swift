@@ -16,6 +16,9 @@ class GameScene: SKScene {
     var tileSize: CGFloat!
     
     let screenSize: CGRect = UIScreen.main.bounds
+    
+    let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight",
+                                             .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
 
     
     override func didMove(to view: SKView) {
