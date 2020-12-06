@@ -15,15 +15,22 @@ struct Position {
     var height = 0
 }
 
-//enum PieceType {
-//    var type = PAWN,
-//    BISHOP,
-//    KNIGHT,
-//    ROOK,
-//    QUEEN,
-//    KING,
-//    OBJECT
-//}
+enum PieceType {
+    case PAWN,
+         BISHOP,
+         KNIGHT,
+         ROOK,
+         QUEEN,
+         KING,
+         OBJECT
+}
+
+enum Faction {
+    case NEUTRAL,
+         WHITE,
+         BLACK
+         
+}
 
 class ChessObject {
     var coordinates = Position()
@@ -39,5 +46,4 @@ class ChessObject {
         self.coordinates = coord
         self.sprite.run(SKAction.move(to: point, duration: 1))
     }
-    
 }

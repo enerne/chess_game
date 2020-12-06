@@ -32,6 +32,5 @@ class Board {
 //            }
 //            objDict[object.coordinates] = object
 //        }
-//        
 //    }
 }
