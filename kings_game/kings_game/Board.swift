@@ -34,4 +34,11 @@ class Board {
         }
         return objDict
     }
+    
+    func setTraditionally(){
+        allObjects = []
+        for col in 1...8{
+            allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
+        }
+    }
 }

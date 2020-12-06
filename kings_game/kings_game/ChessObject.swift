@@ -8,11 +8,17 @@
 import SpriteKit
 import GameplayKit
 
-struct Position {
+struct Position : Hashable{
     var row = 0
     var col = 0
     // In case we do elevation using this
     var height = 0
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(row)
+        hasher.combine(col)
+        hasher.combine(height)
+    }
 }
 
 enum PieceType {
@@ -29,7 +35,6 @@ enum Faction {
     case NEUTRAL,
          WHITE,
          BLACK
-         
 }
 
 class ChessObject {
@@ -38,6 +43,11 @@ class ChessObject {
     var type = PieceType.OBJECT
     
     init(at pos: Position, imageName: String) {
+        self.coordinates = pos
+        self.sprite = SKSpriteNode(fileNamed: imageName)
+    }
+    
+    init(at pos: Position, imageName: String, type: PieceType) {
         self.coordinates = pos
         self.sprite = SKSpriteNode(fileNamed: imageName)
     }

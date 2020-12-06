@@ -9,7 +9,17 @@ import SpriteKit
 import GameplayKit
 
 class ChessPiece : ChessObject{
+    static let factionSprites: [Faction: String] = [.WHITE: "white", .BLACK: "black"]
+    static let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight", .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
     
+    let faction : Faction
+    let pieceName : String
     
-    
+    init(at pos: Position, faction: Faction, type: PieceType) {
+        self.faction = faction
+
+        //Should add a default value to this
+        pieceName = ChessPiece.factionSprites[faction]!+ChessPiece.pieceSprites[type]!
+        super.init(at: pos, imageName: pieceName, type: type)
+    }
 }
