@@ -23,14 +23,15 @@ class Board {
         self.allObjects = objects
     }
     
-//    func boardState() -> [Position:ChessObject]{
-//        let objects = allObjects
-//        var objDict = [Position:ChessObject]
-//        for object in objects{
-//            if objDict[object.coordinates] != nil {
-//                print(object)
-//            }
-//            objDict[object.coordinates] = object
-//        }
-//    }
+    func boardState() -> [Position:ChessObject]{
+        let objects = allObjects
+        var objDict : [Position:ChessObject] = [:]
+        for object in objects{
+            if objDict[object.coordinates] != nil {
+                print(object.type,"not placed, occupying duplicate square.")
+            }
+            objDict[object.coordinates] = object
+        }
+        return objDict
+    }
 }
