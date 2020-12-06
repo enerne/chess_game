@@ -17,13 +17,27 @@ class GameScene: SKScene {
     
     let screenSize: CGRect = UIScreen.main.bounds
     
+    let factionSprites: [Faction: String] = [.WHITE: "white", .BLACK: "black"]
     let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight",
                                              .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
 
+    var currentBoard: Board!
     
     override func didMove(to view: SKView) {
-        var white = true
+        buildBasicBoard()
         
+        // create objects
+        var objects: [ChessPiece] = []
+        
+        // create board
+        currentBoard = Board(at: origin, objects: objects)
+
+
+    }
+    
+    func buildBasicBoard() {
+        var white = true
+
         tileSize = screenSize.width / 4
         origin = CGPoint(x:-screenSize.width * 0.875, y:-screenSize.height * 0.5)
         currentPoint = origin
@@ -53,7 +67,6 @@ class GameScene: SKScene {
             
             
         }
-
     }
     
     
