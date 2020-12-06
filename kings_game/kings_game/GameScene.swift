@@ -4,7 +4,7 @@
 //
 //  Created by Ethan Nerney on 11/17/20.
 //  Copyright © 2020 enerney. All rights reserved.
-//
+//  all pieces by Gyan Lakhwani from the Noun Project
 
 import SpriteKit
 import GameplayKit
@@ -31,6 +31,10 @@ class GameScene: SKScene {
         
         // create board
         currentBoard = Board(at: origin, objects: objects)
+        
+        for obj in currentBoard.allObjects {
+            addChild(obj.sprite)
+        }
 
 
     }
