@@ -48,7 +48,11 @@ class GameScene: SKScene {
             selectedPiece = nil
             return false
         } else if piece!.faction == currentFaction{
+            if selectedPiece != nil {
+                currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(false)
+            }
             selectedPiece = piece
+            currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(true)
             return true
         }
         print("Time for \(factionSprites[currentFaction]!) to act.")

@@ -59,7 +59,7 @@ class Tile {
     }
     
     func showHighlight(_ b: Bool) {
-        print("highlight")
+        print("highlight \(b)")
         highlight.isHidden = !b
     }
 }
