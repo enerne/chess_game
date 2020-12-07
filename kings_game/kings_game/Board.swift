@@ -24,6 +24,8 @@ class Board {
     var tiles : [Position:Tile] = [:]
     var triggers : [Int:Void]
     
+    var capturedObjects = [Faction: [ChessObject]]()
+    
     
     init(at center: CGPoint, objects: [ChessObject], tileSize: CGFloat) {
         self.center = center
@@ -427,7 +429,7 @@ class Board {
             if takenPiece.faction != piece.faction{
                 gameTicker.append("\(moveNumber). \(piece.pieceName) X [\(pos.col):\(pos.row):\(pos.height)]\n")
                 moveNumber += 1
-                capturePiece(takenPiece)
+                capturePiece(takenPiece, by: piece.faction)
                 piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
                 if piece.type == .PAWN && tiles[translatePosition(piece.coordinates, piece.direction, 1)] == nil{
                     piece.promote(to: .QUEEN)
@@ -449,14 +451,36 @@ class Board {
         return true
     }
     //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?
-    func capturePiece(_ piece: ChessPiece){
+    func capturePiece(_ piece: ChessPiece, by faction: Faction){
         print("Captured",piece.info())
         if piece.type == .KING{
             print(gameTicker)
         }
         piece.captured = true
-        piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
+//        piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
+        
+        // add to capturedObjects
+        if let _ = capturedObjects[faction] {
+            capturedObjects[faction]!.append(piece)
+        } else {
+            capturedObjects[faction] = [piece]
+        }
+        
+        // get piece's index in allObjects
+        var i = 0
+        for p in allObjects {
+            if p === piece {
+                break
+            }
+            i+=1
+        }
+        // remove from all objects
+        allObjects.remove(at: i)
+        // remove sprite from parent
         piece.sprite.removeFromParent()
+        
+        print(capturedObjects)
+        
     }
     
     //True if tile should allow pieces to move through it, false if solid
