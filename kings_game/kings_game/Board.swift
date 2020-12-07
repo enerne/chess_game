@@ -284,13 +284,13 @@ class Board {
     func getPawnDiagonals(direction: Direction) -> [Direction]{
         switch direction {
         case .NORTH:
-            return [.NORTHEAST,.NORTHWEST]
+            return [.NORTHEAST, .NORTHWEST]
         case .EAST:
-            return [.NORTHEAST,.SOUTHEAST]
+            return [.NORTHEAST, .SOUTHEAST]
         case .SOUTH:
-            return [.SOUTHEAST,.SOUTHWEST]
+            return [.SOUTHEAST, .SOUTHWEST]
         case .WEST:
-            return [.NORTHWEST,.SOUTHWEST]
+            return [.NORTHWEST, .SOUTHWEST]
         default:
             return []
         }

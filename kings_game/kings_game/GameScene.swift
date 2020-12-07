@@ -72,7 +72,7 @@ class GameScene: SKScene {
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
                         currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
-                        selectedPiece = nil
+                        _ = pieceSelector(piece: nil)
                         
                     //Else try changing selectedPiece to clickedPiece
                     } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
@@ -82,7 +82,7 @@ class GameScene: SKScene {
                         
                     } else {
                         print("Let me take his place.")
-                        selectedPiece = nil
+                        _ = pieceSelector(piece: nil)
                     }
                 } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
                     if pieceSelector(piece: piece) {
@@ -90,7 +90,7 @@ class GameScene: SKScene {
                     }
                 } else {
                     print("Standing down, sire.")
-                    selectedPiece = nil
+                    _ = pieceSelector(piece: nil)
                 }
             } else {
                 if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
