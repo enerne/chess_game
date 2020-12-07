@@ -16,6 +16,8 @@ class Board {
     let rows = 8
     
     let tileSize : CGFloat
+    var gameTicker = ""
+    var moveNumber = 1
     
     let center : CGPoint
     var allObjects : [ChessObject] = []
@@ -296,6 +298,8 @@ class Board {
     func movePiece(piece: ChessPiece, pos: Position) -> Bool{
         if let takenPiece = boardState()[pos] as? ChessPiece{
             if takenPiece.faction != piece.faction{
+                gameTicker.append("\(moveNumber). \(piece.pieceName) X [\(pos.col):\(pos.row):\(pos.height)]\n")
+                moveNumber += 1
                 capturePiece(takenPiece)
                 piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
                 return true
@@ -303,12 +307,17 @@ class Board {
                 return false
             }
         }
+        gameTicker.append("\(moveNumber). \(piece.pieceName) [\(pos.col):\(pos.row):\(pos.height)}\n")
+        moveNumber += 1
         piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
         return true
     }
     //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?
     func capturePiece(_ piece: ChessPiece){
         print("captured",piece.info())
+        if piece.type == .KING{
+            print(gameTicker)
+        }
         piece.captured = true
         piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
         //piece.sprite.zPosition -= 10 //REMOVEFROMPARENT IS CLEANER, but this hides them the same way
