@@ -305,7 +305,9 @@ class Board {
                 moveNumber += 1
                 capturePiece(takenPiece)
                 piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
-                
+                if piece.type == .PAWN && tiles[translatePosition(piece.coordinates, piece.direction, 1)] == nil{
+                    piece.promote(to: .QUEEN)
+                }
 
                 return true
             } else {
@@ -315,6 +317,11 @@ class Board {
         gameTicker.append("\(moveNumber). \(piece.pieceName) [\(pos.col):\(pos.row):\(pos.height)}\n")
         moveNumber += 1
         piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
+        
+        if piece.type == .PAWN && tiles[translatePosition(piece.coordinates, piece.direction, 1)] == nil{
+            piece.promote(to: .QUEEN)
+        }
+        
         return true
     }
     //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?

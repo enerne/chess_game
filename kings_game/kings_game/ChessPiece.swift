@@ -20,6 +20,7 @@ class ChessPiece : ChessObject{
     var direction : Direction
     var captured = false
 
+
     init(at pos: Position, faction: Faction, type: PieceType) {
         self.faction = faction
         
@@ -40,6 +41,11 @@ class ChessPiece : ChessObject{
         if sprite == nil {
             print(pieceName,"SPRITE FAILED TO INITIALIZE")
         }
+    }
+    
+    func promote(to pieceType: PieceType) {
+        self.type = pieceType
+        self.sprite.texture = SKTexture(imageNamed: "\(ChessPiece.factionSprites[faction]!+ChessPiece.pieceSprites[type]!)")
     }
     
     
