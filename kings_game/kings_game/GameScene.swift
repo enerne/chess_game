@@ -5,6 +5,7 @@
 //  Created by Ethan Nerney on 11/17/20.
 //  Copyright © 2020 enerney. All rights reserved.
 //  all pieces by Gyan Lakhwani from the Noun Project
+//  jester by Anton Gajdosik from the Noun Project
 
 import SpriteKit
 import GameplayKit
@@ -54,8 +55,14 @@ class GameScene: SKScene {
             currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(true)
             return true
         }
+        
         print("Time for \(factionSprites[currentFaction]!) to act.")
         return false
+    }
+    
+    //Changing currentFaction code
+    func incrementTurn(){
+        currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
     }
     
     func touchDown(atPoint pos : CGPoint) {
@@ -71,7 +78,7 @@ class GameScene: SKScene {
                     //If move successful (piece not on same team) TODO: Make this include causing check
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
-                        currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
+                        incrementTurn()
                         _ = pieceSelector(piece: nil)
                         
                     //Else try changing selectedPiece to clickedPiece
@@ -84,13 +91,9 @@ class GameScene: SKScene {
                         print("Let me take his place.")
                         _ = pieceSelector(piece: nil)
                     }
-                } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                    if pieceSelector(piece: piece) {
-                        print("\(piece.pieceName) chosen.")
-                    }
                 } else {
                     print("Standing down, sire.")
-                    _ = pieceSelector(piece: nil)
+                    _ = pieceSelector(piece: currentBoard.boardState()[selectedPos] as? ChessPiece)
                 }
             } else {
                 if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {

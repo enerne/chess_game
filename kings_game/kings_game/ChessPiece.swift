@@ -10,7 +10,7 @@ import GameplayKit
 
 class ChessPiece : ChessObject{
     static let factionSprites: [Faction: String] = [.WHITE: "white", .BLACK: "black"]
-    static let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight", .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
+    static let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight", .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king", .JESTER: "_jester"]
     
     let faction : Faction
     //type stored by ObjectPiece

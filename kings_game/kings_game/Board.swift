@@ -22,11 +22,14 @@ class Board {
     let center : CGPoint
     var allObjects : [ChessObject] = []
     var tiles : [Position:Tile] = [:]
+    var triggers : [Int:Void]
+    
     
     init(at center: CGPoint, objects: [ChessObject], tileSize: CGFloat) {
         self.center = center
         self.tileSize = tileSize
         self.allObjects = objects
+        self.triggers = [:]
     }
     
     //Return dictionary of positions to lists of objects
@@ -70,8 +73,8 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 1, col: 6, height: 0), faction: .WHITE, type: .BISHOP))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .ROOK))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 8, height: 0), faction: .WHITE, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 4, height: 0), faction: .WHITE, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KING))
         // ^       ^     |       |
@@ -81,8 +84,8 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 8, col: 6, height: 0), faction: .BLACK, type: .BISHOP))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 1, height: 0), faction: .BLACK, type: .ROOK))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 8, height: 0), faction: .BLACK, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 2, height: 0), faction: .BLACK, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 2, height: 0), faction: .BLACK, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
     }
@@ -165,12 +168,20 @@ class Board {
             if let piece = obj as? ChessPiece { positionOptions += testKnight(piece: piece) }
         case .ROOK:
             positionOptions += testRook(pos: pos)
+        case .JESTER:
+            if let piece = obj as? ChessPiece {
+                if piece.numMoves % 2 == 0 {
+                    positionOptions += testBishop(pos: pos)
+                } else {
+                    positionOptions += testRook(pos: pos)
+                }
+            }
         case .QUEEN:
             positionOptions += testQueen(pos: pos)
         case .KING:
-            positionOptions += testKing(pos: pos)
-        default:
-            print("PieceType not recognized by getOptions.")
+            if let piece = obj as? ChessPiece { positionOptions += testKing(piece: piece) }
+//        default:
+//            print("PieceType not recognized by getOptions.")
         }
         for position in positionOptions{
             options[position] = boardState()[position]
@@ -224,15 +235,33 @@ class Board {
         return positionOptions
     }
     //King range
-    func testKing(pos: Position) -> [Position] {
-        var positionOptions = testDirection(direction: .NORTHEAST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .SOUTHEAST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .SOUTHWEST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .NORTHWEST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .NORTH, position: pos, range: 1)
-        positionOptions += testDirection(direction: .EAST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .SOUTH, position: pos, range: 1)
-        positionOptions += testDirection(direction: .WEST, position: pos, range: 1)
+    func testKing(piece: ChessPiece) -> [Position] {
+        let currentPos = piece.coordinates
+        let currentBoard = boardState()
+        
+        var positionOptions = testDirection(direction: .NORTHEAST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .SOUTHEAST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .SOUTHWEST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .NORTHWEST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .NORTH, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .EAST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .SOUTH, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .WEST, position: currentPos, range: 1)
+        
+        if piece.numMoves == 0{
+            for dir in [Direction.NORTH, .EAST, .SOUTH, .WEST]{
+                let castles = testDirection(direction: dir, position: currentPos, range: nil)
+                for opt in castles {
+                    if let piece = currentBoard[opt] as? ChessPiece{
+                        if piece.type == .ROOK && piece.numMoves == 0{
+                            positionOptions += [translatePosition(currentPos, dir, 2)]
+                            //NEED TO ATTACH ROOK MOVEMENT TO THIS
+                        }
+                    }
+                }
+            }
+        }
+        
         return positionOptions
     }
     //Pawn range -- Takes piece rather than position because pawn is complicated
@@ -249,8 +278,16 @@ class Board {
             }
         }
         
+//        //Check for en passant
+//        for dir in getPawnHorizontals(direction: piece.direction){
+//            let tempPos = translatePosition(currentPos, dir, 1)
+//            if (currentBoard[tempPos] as! ChessPiece) && !solidTile(at: tempPos){
+//                positionOptions.append(tempPos)
+//            }
+//        }
+//
         var range = 1
-        if !piece.moved {
+        if piece.numMoves == 0 {
             range = 2
         }
         
@@ -296,6 +333,21 @@ class Board {
         }
     }
     
+    func getPawnHorizontals(direction: Direction) -> [Direction]{
+        switch direction {
+        case .NORTH:
+            return [.EAST, .WEST]
+        case .EAST:
+            return [.NORTH, .SOUTH]
+        case .SOUTH:
+            return [.EAST, .WEST]
+        case .WEST:
+            return [.NORTH, .SOUTH]
+        default:
+            return []
+        }
+    }
+    
     func movePiece(piece: ChessPiece, pos: Position) -> Bool{
         tiles[piece.coordinates]?.showHighlight(false)
 
@@ -326,7 +378,7 @@ class Board {
     }
     //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?
     func capturePiece(_ piece: ChessPiece){
-        print("captured",piece.info())
+        print("Captured",piece.info())
         if piece.type == .KING{
             print(gameTicker)
         }
