@@ -43,10 +43,19 @@ class GameScene: SKScene {
     
     func touchDown(atPoint pos : CGPoint) {
         let node = self.atPoint(pos)
-        if let name = node.name {
-            print("clicked \(name)")
+//        if let name = node.name {
+//            print("clicked \(name)")
+//        }
+        
+        if let piece = currentBoard.getClickedNode(from: node) as? ChessPiece{
+            for opt in currentBoard.getOptions(obj: piece) {
+                if let obj = opt.value{
+                    print(obj.info())
+                } else {
+                    print(opt.key,"nil")
+                }
+            }
         }
-        currentBoard.clickedNode(from: node)
         
     }
     

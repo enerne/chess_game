@@ -28,18 +28,34 @@ class Board {
     }
     
     //Return dictionary of positions to lists of objects
-    func boardState() -> [Position:[ChessObject]] {
+    func boardState() -> [Position:ChessObject] {
         let objects = allObjects
-        var objDict : [Position:[ChessObject]] = [:]
+        var objDict : [Position:ChessObject] = [:]
         for object in objects{
-            if objDict[object.coordinates] != nil {
-                objDict[object.coordinates]?.append(object)
+            if objDict[object.coordinates] == nil {
+                objDict[object.coordinates] = (object)
             } else {
-                objDict[object.coordinates] = [object]
+                print("MULTIPLE OBJECTS OCCUPYING SAME POSITION!!")
+                print(object.info(),"not placed into boardState at",object.coordinates)
             }
         }
         return objDict
     }
+    
+    func setPieceSizeAndPosition() {
+        for obj in allObjects {
+            obj.sprite.size = CGSize(width: tileSize, height: tileSize)
+            obj.sprite.position = tiles[obj.coordinates]?.sprite.position ?? CGPoint(x: 0, y: 0)
+        }
+    }
+    
+    
+    
+    //------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
+    //                                Piece/Board Setup Funcs
+    //------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
     
     //Fill board with normal pieces at normal coordinates
     func setTraditionally() {
@@ -95,20 +111,102 @@ class Board {
         }
     }
     
+    //------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
+    //                                      Piece/Position Funcs
+    //------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
+    
+    func getOptions(obj: ChessObject) -> [Position:ChessObject?]{
+        var options: [Position:ChessObject?] = [:]
+        let pos = obj.coordinates
+        var positionOptions : [Position] = []
+        switch obj.type {
+        case .OBJECT:
+            print("Object has no options.")
+        case .PAWN:
+            print("PAWN")
+        case .BISHOP:
+            print("BISHOP")
+            positionOptions += testBishop(pos: pos)
+        case .KNIGHT:
+            print("KNIGHT")
+        case .ROOK:
+            print("ROOK")
+            positionOptions += testRook(pos: pos)
+        case .QUEEN:
+            print("QUEEN")
+            positionOptions += testQueen(pos: pos)
+        case .KING:
+            print("KING")
+            positionOptions += testKing(pos: pos)
+        default:
+            print("PieceType not recognized by getOptions.")
+        }
+        for position in positionOptions{
+            options[position] = boardState()[position]
+        }
+        return options
+    }
+    
     //Returns all viable tiles in the given direction including first piece
     //TODO: Should this have x-ray and return all pieces so we can adapt it to weird abilities and stuff
-    func testDirection(direction: Direction, object: ChessPiece, range: Int?) -> [Position:[ChessObject]?] {
+    func testDirection(direction: Direction, position: Position, range: Int?) -> [Position] {
         let maxTestingRange = 100
-        var validPositions : [Position:[ChessObject]?] = [:]
-        var currentPos = getNewPosition(object.coordinates, direction, 1)
+        var validPositions : [Position] = []
+        var currentPos = getNewPosition(position, direction, 1)
+        let currentBoard = boardState()
         
-        while (validPositions.count < range ?? maxTestingRange) && (tiles[currentPos] != nil) {
-            validPositions[currentPos] = boardState()[currentPos]
+        while (validPositions.count < range ?? maxTestingRange) && (tiles[currentPos] != nil){
+            validPositions.append(currentPos)
+            if currentBoard[currentPos] != nil { //If a piece is reached, stop there
+                return validPositions
+            }
             currentPos = getNewPosition(currentPos, direction, 1)
         }
         return validPositions
     }
-    
+    //Rook range
+    func testRook(pos: Position) -> [Position] {
+        var positionOptions = testDirection(direction: .NORTH, position: pos, range: nil)
+        print(positionOptions)
+        positionOptions += testDirection(direction: .EAST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .SOUTH, position: pos, range: nil)
+        positionOptions += testDirection(direction: .WEST, position: pos, range: nil)
+        return positionOptions
+    }
+    //Bishop range
+    func testBishop(pos: Position) -> [Position] {
+        var positionOptions = testDirection(direction: .NORTHEAST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .SOUTHEAST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .SOUTHWEST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .NORTHWEST, position: pos, range: nil)
+        return positionOptions
+    }
+    //Queen range
+    func testQueen(pos: Position) -> [Position] {
+        var positionOptions = testDirection(direction: .NORTHEAST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .SOUTHEAST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .SOUTHWEST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .NORTHWEST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .NORTH, position: pos, range: nil)
+        positionOptions += testDirection(direction: .EAST, position: pos, range: nil)
+        positionOptions += testDirection(direction: .SOUTH, position: pos, range: nil)
+        positionOptions += testDirection(direction: .WEST, position: pos, range: nil)
+        return positionOptions
+    }
+    //King range
+    func testKing(pos: Position) -> [Position] {
+        var positionOptions = testDirection(direction: .NORTHEAST, position: pos, range: 1)
+        positionOptions += testDirection(direction: .SOUTHEAST, position: pos, range: 1)
+        positionOptions += testDirection(direction: .SOUTHWEST, position: pos, range: 1)
+        positionOptions += testDirection(direction: .NORTHWEST, position: pos, range: 1)
+        positionOptions += testDirection(direction: .NORTH, position: pos, range: 1)
+        positionOptions += testDirection(direction: .EAST, position: pos, range: 1)
+        positionOptions += testDirection(direction: .SOUTH, position: pos, range: 1)
+        positionOptions += testDirection(direction: .WEST, position: pos, range: 1)
+        return positionOptions
+    }
     
     //Returns given (position) but moved (distance) tiles towards (direction)
     //TODO: Doesn't account for Z yet
@@ -116,40 +214,38 @@ class Board {
         var currentPos = position
         switch direction {
         case .NORTH:
-            currentPos.col += distance
+            currentPos.row += distance
         case .NORTHEAST:
+            currentPos.row += distance
             currentPos.col += distance
-            currentPos.row += distance
         case .EAST:
-            currentPos.row += distance
+            currentPos.col += distance
         case .SOUTHEAST:
-            currentPos.col -= distance
-            currentPos.row += distance
+            currentPos.row -= distance
+            currentPos.col += distance
         case .SOUTH:
-            currentPos.col -= distance
+            currentPos.row -= distance
         case .SOUTHWEST:
             currentPos.col -= distance
             currentPos.row -= distance
         case .WEST:
-            currentPos.row -= distance
+            currentPos.col -= distance
         case .NORTHWEST:
-            currentPos.col += distance
-            currentPos.row -= distance
+            currentPos.row += distance
+            currentPos.col -= distance
         default:
             break
         }
         return currentPos
     }
-    
-    
     //func getThreats() -> [ChessObject] {//Maybe change to chessPiece?
     //}
     
-    
-    func clickedNode(from node: SKNode) -> ChessObject? {
+    func getClickedNode(from node: SKNode) -> ChessObject? {
         for tile in tiles.values {
             if tile.sprite === node {
                 print("\(tile.info())")
+                break
             }
         }
         for piece in allObjects{
@@ -161,23 +257,4 @@ class Board {
         return nil
     }
     
-    func getOptions(obj: ChessObject) -> [Tile]{
-        var options: [Tile] = []
-        switch obj.type {
-        case .OBJECT:
-            print("Object has no options.")
-        case .PAWN:
-            break
-        default:
-            print("PieceType not recognized by getOptions.")
-        }
-        return options
-    }
-    
-    func setPieceSizeAndPosition() {
-        for obj in allObjects {
-            obj.sprite.size = CGSize(width: tileSize, height: tileSize)
-            obj.sprite.position = tiles[obj.coordinates]?.sprite.position ?? CGPoint(x: 0, y: 0)
-        }
-    }
 }
