@@ -43,8 +43,11 @@ class GameScene: SKScene {
         }
     }
     
-    func pieceSelector(piece: ChessPiece) -> Bool{
-        if piece.faction == currentFaction{
+    func pieceSelector(piece: ChessPiece?) -> Bool{
+        if piece == nil {
+            selectedPiece = nil
+            return false
+        } else if piece!.faction == currentFaction{
             selectedPiece = piece
             return true
         }
@@ -64,7 +67,7 @@ class GameScene: SKScene {
                     //If move successful (piece not on same team) TODO: Make this include causing check
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
-                        playingFactions playingFactions.count 
+                        currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
                         selectedPiece = nil
                         
                     //Else try changing selectedPiece to clickedPiece
