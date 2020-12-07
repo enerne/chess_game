@@ -15,6 +15,8 @@ class GameScene: SKScene {
     var origin: CGPoint!
     var currentPoint: CGPoint!
     var tileSize: CGFloat!
+    
+    //Could do [(Faction:Bool)] or store playerFaction(s) to determine if they are player controlled
     var playingFactions : [Faction] = [.WHITE, .BLACK]
     var currentFaction : Faction = .WHITE
     let screenSize: CGRect = UIScreen.main.bounds
@@ -24,7 +26,6 @@ class GameScene: SKScene {
     var selectedPiece : ChessPiece?
     
     override func didMove(to view: SKView) {
-        
         // create board
         origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
@@ -32,7 +33,7 @@ class GameScene: SKScene {
         //currentBoard.buildPillarBoard()
         currentBoard.buildHolesBoard()
         currentBoard.setTraditionally()
-        //scurrentBoard.setJesters()
+        //currentBoard.setJesters()
         
         //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
         
@@ -54,6 +55,7 @@ class GameScene: SKScene {
             
             selectedPiece = piece
             currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(true)
+            print("\(piece!.pieceName) chosen.")
             return true
         }
         
@@ -83,25 +85,16 @@ class GameScene: SKScene {
                         _ = pieceSelector(piece: nil)
                         
                     //Else try changing selectedPiece to clickedPiece
-                    } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                        if pieceSelector(piece: piece) {
-                            print("Let \(piece.pieceName) take his place.")
-                        }
-                        
                     } else {
-                        print("Let me take his place.")
-                        _ = pieceSelector(piece: nil)
+                        print("I have your back.")
+                        _ = pieceSelector(piece: currentBoard.boardState()[selectedPos] as? ChessPiece)
                     }
                 } else {
                     print("Standing down, sire.")
                     _ = pieceSelector(piece: currentBoard.boardState()[selectedPos] as? ChessPiece)
                 }
             } else {
-                if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                    if pieceSelector(piece: piece) {
-                        print("\(piece.pieceName) chosen.")
-                    }
-                }
+                _ = pieceSelector(piece: currentBoard.boardState()[selectedPos] as? ChessPiece)
             }
         }
     }
