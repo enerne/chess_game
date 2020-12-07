@@ -14,13 +14,14 @@ enum TileTerrain { // Only TILE currently implemented, others are placeholder
          WATER,
          SAND,
          FIRE,
-         WALL
+         WALL,
+         HOLE
 }
 
 class Tile {
     //Maybe remove colorsprites, kinda wack and illogical
     static let colorSprites: [Faction: String] = [.WHITE: "white_", .BLACK: "black_", .NEUTRAL: ""]
-    static let tileSprites: [TileTerrain: String] = [.TILE: "tile", .FOREST: "forest", .WATER: "knight", .SAND: "sand", .FIRE: "fire", .WALL: "wall"]
+    static let tileSprites: [TileTerrain: String] = [.TILE: "tile", .FOREST: "forest", .WATER: "knight", .SAND: "sand", .FIRE: "fire", .WALL: "wall", .HOLE: "hole"]
     
     var sprite : SKSpriteNode!
     var coordinates : Position
@@ -37,6 +38,8 @@ class Tile {
         self.terrain = terrain
         switch self.terrain {
         case .WALL:
+            blocked = true
+        case .HOLE:
             blocked = true
         default:
             blocked = false
@@ -58,17 +61,15 @@ class Tile {
     
     func info() -> String{
         //Forcing unwrap of name, not needed if becomes problem
-        return "\(String(describing: sprite.name!)), row:\(coordinates.row), col:\(coordinates.col), height:\(coordinates.height)"
+        return "\(String(describing: sprite.name!)), [\(coordinates.row):\(coordinates.col):\(coordinates.height)]."
     }
     
     func showHighlight(_ b: Bool) {
-        print("highlight \(b)")
         if b {
             if highlight.parent == nil {
                 sprite.addChild(highlight)
             }
         } else {
-            print("removal")
             highlight.removeFromParent()
         }
     }

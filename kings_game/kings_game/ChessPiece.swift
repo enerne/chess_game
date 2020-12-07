@@ -9,8 +9,8 @@ import SpriteKit
 import GameplayKit
 
 class ChessPiece : ChessObject{
-    static let factionSprites: [Faction: String] = [.WHITE: "white", .BLACK: "black"]
-    static let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight", .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king", .JESTER: "_jester"]
+    static let factionSprites: [Faction: String] = [.WHITE: "white_", .BLACK: "black_", .NEUTRAL: ""]
+    static let pieceSprites: [PieceType: String] = [.PAWN: "pawn", .BISHOP: "bishop", .KNIGHT: "knight", .ROOK: "rook", .QUEEN: "queen", .KING: "king", .JESTER: "jester", .ENT: "ent"]
     
     let faction : Faction
     //type stored by ObjectPiece

@@ -41,7 +41,9 @@ enum PieceType {
          JESTER,
          QUEEN,
          KING,
-         OBJECT
+         OBJECT,
+         
+         ENT
 }
 
 enum Faction {
@@ -80,6 +82,6 @@ class ChessObject {
     
     func info() -> String{
         //Forcing unwrap of name, not needed if becomes problem
-        return "\(String(describing: sprite.name!)), row:\(coordinates.row), col:\(coordinates.col), height:\(coordinates.height)"
+        return "\(String(describing: sprite.name!)), [\(coordinates.row):\(coordinates.col):\(coordinates.height)]"
     }
 }

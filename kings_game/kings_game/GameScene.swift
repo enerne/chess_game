@@ -15,12 +15,9 @@ class GameScene: SKScene {
     var origin: CGPoint!
     var currentPoint: CGPoint!
     var tileSize: CGFloat!
-    var playingFactions : [Faction] = [.WHITE,.BLACK]
+    var playingFactions : [Faction] = [.WHITE, .BLACK]
     var currentFaction : Faction = .WHITE
     let screenSize: CGRect = UIScreen.main.bounds
-    
-    let factionSprites: [Faction: String] = [.WHITE: "white", .BLACK: "black"]
-    let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight", .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
 
     var currentBoard: Board!
     
@@ -32,8 +29,13 @@ class GameScene: SKScene {
         origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
         //currentBoard.buildBasicBoard()
-        currentBoard.buildPitBoard()
+        //currentBoard.buildPillarBoard()
+        currentBoard.buildHolesBoard()
         currentBoard.setTraditionally()
+        //scurrentBoard.setJesters()
+        
+        //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
+        
         currentBoard.setPieceSizeAndPosition()
         
         for tile in currentBoard.tiles.values {
@@ -45,7 +47,6 @@ class GameScene: SKScene {
     }
     
     func pieceSelector(piece: ChessPiece?) -> Bool{
-
         if piece == nil {
             selectedPiece = nil
             return false
@@ -56,7 +57,7 @@ class GameScene: SKScene {
             return true
         }
         
-        print("Time for \(factionSprites[currentFaction]!) to act.")
+        print("Time for \(ChessPiece.factionSprites[currentFaction]!) to act.")
         return false
     }
     

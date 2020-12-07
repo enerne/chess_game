@@ -73,6 +73,33 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 1, col: 6, height: 0), faction: .WHITE, type: .BISHOP))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .ROOK))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 8, height: 0), faction: .WHITE, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 4, height: 0), faction: .WHITE, type: .QUEEN))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KING))
+        // ^       ^     |       |
+        // | WHITE | - - | BLACK |
+        // |       |     v       v
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 3, height: 0), faction: .BLACK, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 6, height: 0), faction: .BLACK, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 1, height: 0), faction: .BLACK, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 8, height: 0), faction: .BLACK, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 2, height: 0), faction: .BLACK, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
+    }
+    //Replace knights with jesters
+    func setJesters(){
+        allObjects = []
+        for col in 1...8 {
+            allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
+            allObjects.append(ChessPiece(at: Position(row: 7, col: col, height: 0), faction: .BLACK, type: .PAWN))
+        }
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 3, height: 0), faction: .WHITE, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 6, height: 0), faction: .WHITE, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 8, height: 0), faction: .WHITE, type: .ROOK))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 4, height: 0), faction: .WHITE, type: .QUEEN))
@@ -88,6 +115,10 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
+    }
+    //Throws an ent into the mix
+    func addEnt(at pos:Position){
+        allObjects.append(ChessPiece(at: pos, faction: .NEUTRAL, type: .ENT))
     }
     
     func buildBasicBoard() {
@@ -116,7 +147,7 @@ class Board {
         }
     }
     
-    func buildPitBoard() {
+    func buildPillarBoard() {
         var white = true
         var currentPoint = center
         for rank in 1...8 { //TODO: Adding wall to middle soon
@@ -146,6 +177,39 @@ class Board {
         }
     }
     
+    func buildHolesBoard() {
+        var white = true
+        var currentPoint = center
+        for rank in 1...8 { //TODO: Adding wall to middle soon
+            for file in 1...8 {
+                let tile : Tile
+                if [3,6].contains(rank) && [3,6].contains(file) {
+                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .HOLE)
+                } else {
+                    if white {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                    } else {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                    }
+                }
+                tile.sprite.position = currentPoint
+                tile.sprite.size = CGSize(width: tileSize, height: tileSize)
+                tile.sprite.zRotation = CGFloat(Double.pi)/2.0 * CGFloat(Double(Int.random(in: 0...3)))
+                tile.sprite.zPosition = -1
+                
+                currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
+                white = !white
+                tiles[Position(row: rank, col: file, height: 0)] = tile
+                
+            }
+            currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
+            white = !white
+        }
+    }
+    
+    func clearTiles() {
+        tiles = [:]
+    }
     //------------------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------
     //                                      Piece/Position Funcs
@@ -169,16 +233,12 @@ class Board {
         case .ROOK:
             positionOptions += testRook(pos: pos)
         case .JESTER:
-            if let piece = obj as? ChessPiece {
-                if piece.numMoves % 2 == 0 {
-                    positionOptions += testBishop(pos: pos)
-                } else {
-                    positionOptions += testRook(pos: pos)
-                }
-            }
+            if let piece = obj as? ChessPiece { positionOptions += testJester(piece: piece) }
         case .QUEEN:
             positionOptions += testQueen(pos: pos)
         case .KING:
+            if let piece = obj as? ChessPiece { positionOptions += testKing(piece: piece) }
+        case .ENT:
             if let piece = obj as? ChessPiece { positionOptions += testKing(piece: piece) }
 //        default:
 //            print("PieceType not recognized by getOptions.")
@@ -317,6 +377,18 @@ class Board {
         
         return positionOptions
     }
+    //Jester
+    func testJester(piece: ChessPiece) -> [Position] {
+        var positionOptions : [Position] = []
+        let currentPos = piece.coordinates
+        
+        if piece.numMoves % 2 == 0 {
+            positionOptions += testBishop(pos: currentPos)
+        } else {
+            positionOptions += testRook(pos: currentPos)
+        }
+        return positionOptions
+    }
     
     func getPawnDiagonals(direction: Direction) -> [Direction]{
         switch direction {
@@ -366,7 +438,7 @@ class Board {
                 return false
             }
         }
-        gameTicker.append("\(moveNumber). \(piece.pieceName) [\(pos.col):\(pos.row):\(pos.height)}\n")
+        gameTicker.append("\(moveNumber). \(piece.pieceName) [\(pos.col):\(pos.row):\(pos.height)]\n")
         moveNumber += 1
         piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
         
@@ -384,7 +456,6 @@ class Board {
         }
         piece.captured = true
         piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
-        //piece.sprite.zPosition -= 10 //REMOVEFROMPARENT IS CLEANER, but this hides them the same way
         piece.sprite.removeFromParent()
     }
     
