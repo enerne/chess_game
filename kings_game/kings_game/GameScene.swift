@@ -64,7 +64,6 @@ class GameScene: SKScene {
                     //If move successful (piece not on same team) TODO: Make this include causing check
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
-                        
                         selectedPiece = nil
                         
                     //Else try changing selectedPiece to clickedPiece
