@@ -125,20 +125,18 @@ class Board {
         case .OBJECT:
             print("Object has no options.")
         case .PAWN:
-            print("PAWN")
+            if let piece = obj as? ChessPiece {
+                positionOptions += testPawn(piece: piece)
+            }
         case .BISHOP:
-            print("BISHOP")
             positionOptions += testBishop(pos: pos)
         case .KNIGHT:
-            print("KNIGHT")
+            print("Knights have no horses yet.")
         case .ROOK:
-            print("ROOK")
             positionOptions += testRook(pos: pos)
         case .QUEEN:
-            print("QUEEN")
             positionOptions += testQueen(pos: pos)
         case .KING:
-            print("KING")
             positionOptions += testKing(pos: pos)
         default:
             print("PieceType not recognized by getOptions.")
@@ -207,12 +205,64 @@ class Board {
         positionOptions += testDirection(direction: .WEST, position: pos, range: 1)
         return positionOptions
     }
+    //Pawn range -- Takes piece rather than position because pawn is complicated
+    func testPawn(piece: ChessPiece) -> [Position] {
+        var positionOptions : [Position] = []
+        let maxTestingRange = 100
+        var currentPos = piece.coordinates
+        let currentBoard = boardState()
+        
+        for dir in getPawnDiagonals(direction: piece.direction){
+            let tempPos = getNewPosition(currentPos, dir, 1)
+            if let piece = currentBoard[tempPos] as? ChessPiece{
+                positionOptions.append(tempPos)
+            }
+        }
+        
+        var range = 1
+        if !piece.moved {
+            range = 2
+        }
+        
+        for i in 1...range{
+            let tempPos = getNewPosition(currentPos, piece.direction, 1)
+            if currentBoard[tempPos] == nil{
+                positionOptions.append(tempPos)
+                currentPos = tempPos
+            } else {
+                return positionOptions
+            }
+        }
+        return positionOptions
+    }
     
-    func movePiece(piece: ChessPiece, pos: Position) {
+    func getPawnDiagonals(direction: Direction) -> [Direction]{
+        switch direction {
+        case .NORTH:
+            return [.NORTHEAST,.NORTHWEST]
+        case .EAST:
+            return [.NORTHEAST,.SOUTHEAST]
+        case .SOUTH:
+            return [.SOUTHEAST,.SOUTHWEST]
+        case .WEST:
+            return [.NORTHWEST,.SOUTHWEST]
+        default:
+            return []
+        }
+    }
+    
+    func movePiece(piece: ChessPiece, pos: Position) -> Bool{
         if let takenPiece = boardState()[pos] as? ChessPiece{
-            capturePiece(takenPiece)
+            if takenPiece.faction != piece.faction{
+                capturePiece(takenPiece)
+                piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
+                return true
+            } else {
+                return false
+            }
         }
         piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
+        return true
     }
     //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?
     func capturePiece(_ piece: ChessPiece){

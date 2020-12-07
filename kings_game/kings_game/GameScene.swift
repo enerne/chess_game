@@ -51,20 +51,26 @@ class GameScene: SKScene {
         
         
         if let selectedPos = currentBoard.getClickedPosition(from: node) {
-            print(selectedPos)
             if selectedPiece != nil{
                 if currentBoard.getOptions(obj: selectedPiece!).keys.contains(selectedPos) {
-                    currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos)
+                    if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
+                        print("Onwards.")
+                    } else {
+                        print("I don't think he's a spy...")
+                    }
+                } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
+                    //Touched same piece, change nothing
+                    print("At your command, sire.")
                 } else {
-                    print("nil selected")
+                    print("Standing down, sire")
                     selectedPiece = nil
                 }
             } else {
                 if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
                     selectedPiece = piece
-                    print("\(piece.info()) selected")
+                    print("\(piece.pieceName) chosen.")
                 } else {
-                    print("nil selected")
+                    print("Standing down, sire.")
                     selectedPiece = nil
                 }
             }
