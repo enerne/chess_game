@@ -15,11 +15,11 @@ class GameScene: SKScene {
     var currentPoint: CGPoint!
     var tileSize: CGFloat!
     var playingFactions : [Faction] = [.WHITE,.BLACK]
+    var currentFaction : Faction = .WHITE
     let screenSize: CGRect = UIScreen.main.bounds
     
     let factionSprites: [Faction: String] = [.WHITE: "white", .BLACK: "black"]
-    let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight",
-                                             .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
+    let pieceSprites: [PieceType: String] = [.PAWN: "_pawn", .BISHOP: "_bishop", .KNIGHT: "_knight", .ROOK: "_rook", .QUEEN: "_queen", .KING: "_king"]
 
     var currentBoard: Board!
     
@@ -43,25 +43,36 @@ class GameScene: SKScene {
         }
     }
     
-    
-    
+    func pieceSelector(piece: ChessPiece) -> Bool{
+        if piece.faction == currentFaction{
+            selectedPiece = piece
+            return true
+        }
+        print()
+        return false
+    }
     
     func touchDown(atPoint pos : CGPoint) {
         let node = self.atPoint(pos)
-//        if let name = node.name {
-//            print("clicked \(name)")
-//        }
         
-        
+        //Get clicked position
         if let selectedPos = currentBoard.getClickedPosition(from: node) {
             if selectedPiece != nil{
+                //If currentPiece can move to clicked position
                 if currentBoard.getOptions(obj: selectedPiece!).keys.contains(selectedPos) {
+                    
+                    //If move successful (piece not on same team) TODO: Make this include causing check
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
+                        
                         selectedPiece = nil
-                    }else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                        selectedPiece = piece
-                        print("\(piece.pieceName) chosen.")
+                        
+                    //Else try changing selectedPiece to clickedPiece
+                    } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
+                        if pieceSelector(piece: piece) {
+                            print("Let \(piece.pieceName) take his place.")
+                        }
+                        
                     } else {
                         print("Let me take his place.")
                         selectedPiece = nil
@@ -80,21 +91,6 @@ class GameScene: SKScene {
                 }
             }
         }
-//        if let piece = currentBoard.getClickedObject(from: node) as? ChessPiece{
-//            if selectedPiece != nil {
-//                selectedPiece = piece
-//            } else {
-//                for opt in currentBoard.getOptions(obj: selectedPiece) {
-//                    if let obj = opt.value{
-//                        print(obj.info())
-//                    } else {
-//                        print(opt.key,"nil")
-//                    }
-//                }
-//        } else {
-//            selectedPiece = nil
-//        }
-        
     }
     
     func touchMoved(toPoint pos : CGPoint) {

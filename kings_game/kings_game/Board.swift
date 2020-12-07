@@ -149,6 +149,7 @@ class Board {
     //------------------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------
     
+    //Returns a dictionary using all positions that the piece can 'move to' (including friendly/enemy squares that can be defended/attacked). Piece logic is in funcs below.
     func getOptions(obj: ChessObject) -> [Position:ChessObject?]{
         var options: [Position:ChessObject?] = [:]
         let pos = obj.coordinates
