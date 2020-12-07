@@ -27,12 +27,19 @@ class Tile {
     var color : Faction? // Maybe remove
     var terrain : TileTerrain
     var tileName : String
+    var blocked : Bool
     
     
     init(pos: Position, color: Faction, terrain: TileTerrain){
         self.coordinates = pos
         self.color = color
         self.terrain = terrain
+        switch self.terrain {
+        case .WALL:
+            blocked = true
+        default:
+            blocked = false
+        }
         self.tileName = Tile.colorSprites[color]!+Tile.tileSprites[terrain]!
         
         sprite = SKSpriteNode.init(imageNamed: tileName)

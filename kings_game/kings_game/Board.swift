@@ -183,7 +183,7 @@ class Board {
         var currentPos = translatePosition(position, direction, 1)
         let currentBoard = boardState()
         
-        while (validPositions.count < range ?? maxTestingRange) && (tiles[currentPos] != nil){
+        while (validPositions.count < range ?? maxTestingRange) && (!solidTile(at: currentPos)){
             validPositions.append(currentPos)
             if currentBoard[currentPos] != nil { //If a piece is reached, stop there
                 return validPositions
@@ -241,7 +241,7 @@ class Board {
         //Check for diagonal attacks
         for dir in getPawnDiagonals(direction: piece.direction){
             let tempPos = translatePosition(currentPos, dir, 1)
-            if (currentBoard[tempPos] as? ChessPiece) != nil{
+            if (currentBoard[tempPos] as? ChessPiece) != nil && !solidTile(at: tempPos){
                 positionOptions.append(tempPos)
             }
         }
@@ -254,7 +254,7 @@ class Board {
         //Check for open forward spaces
         for _ in 1...range{
             let tempPos = translatePosition(currentPos, piece.direction, 1)
-            if currentBoard[tempPos] == nil && tiles[tempPos] != nil {
+            if currentBoard[tempPos] == nil && !solidTile(at: tempPos) {
                 positionOptions.append(tempPos)
                 currentPos = tempPos
             } else {
@@ -267,11 +267,10 @@ class Board {
     func testKnight(piece: ChessPiece) -> [Position] {
         var positionOptions : [Position] = []
         let currentPos = piece.coordinates
-        let currentBoard = boardState()
         
         for disp in [[1,2],[1,-2],[-1,2],[-1,-2],[2,1],[2,-1],[-2,1],[-2,-1]]{
             let tempPos = displacePosition(currentPos, row: disp[0], col: disp[1], height: 0)
-            if tiles[tempPos] != nil {
+            if !solidTile(at: tempPos) {
                 positionOptions.append(tempPos)
             }
         }
@@ -314,6 +313,14 @@ class Board {
         piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
         //piece.sprite.zPosition -= 10 //REMOVEFROMPARENT IS CLEANER, but this hides them the same way
         piece.sprite.removeFromParent()
+    }
+    
+    //True if tile should allow pieces to move through it, false if solid
+    func solidTile(at pos: Position) -> Bool {
+        if tiles[pos]?.blocked ?? false {
+            return true
+        }
+        return false
     }
     
     //Returns given (position) but moved (distance) tiles towards (direction)
