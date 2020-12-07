@@ -171,7 +171,7 @@ class Board {
         case .QUEEN:
             positionOptions += testQueen(pos: pos)
         case .KING:
-            positionOptions += testKing(pos: pos)
+            if let piece = obj as? ChessPiece { positionOptions += testKing(piece: piece) }
         default:
             print("PieceType not recognized by getOptions.")
         }
@@ -227,15 +227,32 @@ class Board {
         return positionOptions
     }
     //King range
-    func testKing(pos: Position) -> [Position] {
-        var positionOptions = testDirection(direction: .NORTHEAST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .SOUTHEAST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .SOUTHWEST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .NORTHWEST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .NORTH, position: pos, range: 1)
-        positionOptions += testDirection(direction: .EAST, position: pos, range: 1)
-        positionOptions += testDirection(direction: .SOUTH, position: pos, range: 1)
-        positionOptions += testDirection(direction: .WEST, position: pos, range: 1)
+    func testKing(piece: ChessPiece) -> [Position] {
+        var currentPos = piece.coordinates
+        let currentBoard = boardState()
+        
+        var positionOptions = testDirection(direction: .NORTHEAST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .SOUTHEAST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .SOUTHWEST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .NORTHWEST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .NORTH, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .EAST, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .SOUTH, position: currentPos, range: 1)
+        positionOptions += testDirection(direction: .WEST, position: currentPos, range: 1)
+        
+        if piece.numMoves == 0{
+            for dir in [Direction.NORTH, .EAST, .SOUTH, .WEST]{
+                let castles = testDirection(direction: dir, position: currentPos, range: nil)
+                for opt in castles {
+                    if let piece = currentBoard[opt] as? ChessPiece{
+                        if piece.type == .ROOK && piece.numMoves == 0{
+                            positionOptions += [translatePosition(currentPos, dir, 2)]
+                        }
+                    }
+                }
+            }
+        }
+        
         return positionOptions
     }
     //Pawn range -- Takes piece rather than position because pawn is complicated
