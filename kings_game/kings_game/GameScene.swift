@@ -35,6 +35,7 @@ class GameScene: SKScene {
         currentBoard.setTraditionally()
         //currentBoard.setJesters()
         
+        //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
         //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
         
         currentBoard.setPieceSizeAndPosition()
