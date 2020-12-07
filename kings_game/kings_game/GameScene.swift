@@ -43,12 +43,15 @@ class GameScene: SKScene {
         }
     }
     
-    func pieceSelector(piece: ChessPiece) -> Bool{
-        if piece.faction == currentFaction{
+    func pieceSelector(piece: ChessPiece?) -> Bool{
+        if piece == nil {
+            selectedPiece = nil
+            return false
+        } else if piece!.faction == currentFaction{
             selectedPiece = piece
             return true
         }
-        print()
+        print("Time for \(factionSprites[currentFaction]!) to act.")
         return false
     }
     
@@ -64,6 +67,7 @@ class GameScene: SKScene {
                     //If move successful (piece not on same team) TODO: Make this include causing check
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
+                        currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
                         selectedPiece = nil
                         
                     //Else try changing selectedPiece to clickedPiece
@@ -77,16 +81,18 @@ class GameScene: SKScene {
                         selectedPiece = nil
                     }
                 } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                    selectedPiece = piece
-                    print("\(piece.pieceName) chosen.")
+                    if pieceSelector(piece: piece) {
+                        print("\(piece.pieceName) chosen.")
+                    }
                 } else {
                     print("Standing down, sire.")
                     selectedPiece = nil
                 }
             } else {
                 if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                    selectedPiece = piece
-                    print("\(piece.pieceName) chosen.")
+                    if pieceSelector(piece: piece) {
+                        print("\(piece.pieceName) chosen.")
+                    }
                 }
             }
         }
