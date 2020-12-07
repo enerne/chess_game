@@ -73,8 +73,8 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 1, col: 6, height: 0), faction: .WHITE, type: .BISHOP))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .ROOK))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 8, height: 0), faction: .WHITE, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 4, height: 0), faction: .WHITE, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KING))
         // ^       ^     |       |
@@ -84,8 +84,8 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 8, col: 6, height: 0), faction: .BLACK, type: .BISHOP))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 1, height: 0), faction: .BLACK, type: .ROOK))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 8, height: 0), faction: .BLACK, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 2, height: 0), faction: .BLACK, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 2, height: 0), faction: .BLACK, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
     }
@@ -168,12 +168,20 @@ class Board {
             if let piece = obj as? ChessPiece { positionOptions += testKnight(piece: piece) }
         case .ROOK:
             positionOptions += testRook(pos: pos)
+        case .JESTER:
+            if let piece = obj as? ChessPiece {
+                if piece.numMoves % 2 == 0 {
+                    positionOptions += testBishop(pos: pos)
+                } else {
+                    positionOptions += testRook(pos: pos)
+                }
+            }
         case .QUEEN:
             positionOptions += testQueen(pos: pos)
         case .KING:
             if let piece = obj as? ChessPiece { positionOptions += testKing(piece: piece) }
-        default:
-            print("PieceType not recognized by getOptions.")
+//        default:
+//            print("PieceType not recognized by getOptions.")
         }
         for position in positionOptions{
             options[position] = boardState()[position]
@@ -228,7 +236,7 @@ class Board {
     }
     //King range
     func testKing(piece: ChessPiece) -> [Position] {
-        var currentPos = piece.coordinates
+        let currentPos = piece.coordinates
         let currentBoard = boardState()
         
         var positionOptions = testDirection(direction: .NORTHEAST, position: currentPos, range: 1)
@@ -247,6 +255,7 @@ class Board {
                     if let piece = currentBoard[opt] as? ChessPiece{
                         if piece.type == .ROOK && piece.numMoves == 0{
                             positionOptions += [translatePosition(currentPos, dir, 2)]
+                            //NEED TO ATTACH ROOK MOVEMENT TO THIS
                         }
                     }
                 }

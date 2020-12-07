@@ -38,6 +38,7 @@ enum PieceType {
          BISHOP,
          KNIGHT,
          ROOK,
+         JESTER,
          QUEEN,
          KING,
          OBJECT
