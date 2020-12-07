@@ -33,7 +33,7 @@ class GameScene: SKScene {
         currentBoard.setPieceSizeAndPosition()
         
         for tile in currentBoard.tiles.values {
-            addChild(tile)
+            addChild(tile.sprite)
         }
         for obj in currentBoard.allObjects{
             addChild(obj.sprite)
@@ -46,7 +46,7 @@ class GameScene: SKScene {
         if let name = node.name {
             print("clicked \(name)")
         }
-        
+        currentBoard.clickedNode(from: node)
         
     }
     

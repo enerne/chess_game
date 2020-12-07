@@ -21,6 +21,18 @@ struct Position : Hashable{
     }
 }
 
+enum Direction {
+    case NORTH,
+         NORTHEAST,
+         EAST,
+         SOUTHEAST,
+         SOUTH,
+         SOUTHWEST,
+         WEST,
+         NORTHWEST,
+         NONE
+}
+
 enum PieceType {
     case PAWN,
          BISHOP,
@@ -60,5 +72,10 @@ class ChessObject {
     func moveObject(to coord: Position, point: CGPoint) {
         self.coordinates = coord
         self.sprite.run(SKAction.move(to: point, duration: 1))
+    }
+    
+    func info() -> String{
+        //Forcing unwrap of name, not needed if becomes problem
+        return "\(String(describing: sprite.name!)), row:\(coordinates.row), col:\(coordinates.col), height:\(coordinates.height)"
     }
 }
