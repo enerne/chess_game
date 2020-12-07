@@ -53,7 +53,8 @@ class ChessObject {
     var coordinates = Position()
     var sprite: SKSpriteNode!
     var type = PieceType.OBJECT
-    var moved = false
+    var numMoves = 0
+    
 
     //var obstructing = true // Could be used to make objects solid or not (dropped torch vs wall)
     
@@ -73,7 +74,7 @@ class ChessObject {
     func moveObject(to coord: Position, point: CGPoint) {
         self.coordinates = coord
         self.sprite.run(SKAction.move(to: point, duration: 0.5))
-        self.moved = true //TODO: Make sure if moves aren't completed (i.e. would cause check) that this does not trigger regardless
+        self.numMoves += 1 //TODO: Make sure if moves aren't completed (i.e. would cause check) that this does not trigger regardless
     }
     
     func info() -> String{

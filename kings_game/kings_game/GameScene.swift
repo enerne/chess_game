@@ -51,8 +51,14 @@ class GameScene: SKScene {
             selectedPiece = piece
             return true
         }
+        
         print("Time for \(factionSprites[currentFaction]!) to act.")
         return false
+    }
+    
+    //Changing currentFaction code
+    func incrementTurn(){
+        currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
     }
     
     func touchDown(atPoint pos : CGPoint) {
@@ -61,13 +67,14 @@ class GameScene: SKScene {
         //Get clicked position
         if let selectedPos = currentBoard.getClickedPosition(from: node) {
             if selectedPiece != nil{
+                
                 //If currentPiece can move to clicked position
                 if currentBoard.getOptions(obj: selectedPiece!).keys.contains(selectedPos) {
                     
                     //If move successful (piece not on same team) TODO: Make this include causing check
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
-                        currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
+                        incrementTurn()
                         _ = pieceSelector(piece: nil)
                         
                     //Else try changing selectedPiece to clickedPiece
@@ -80,13 +87,9 @@ class GameScene: SKScene {
                         print("Let me take his place.")
                         _ = pieceSelector(piece: nil)
                     }
-                } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                    if pieceSelector(piece: piece) {
-                        print("\(piece.pieceName) chosen.")
-                    }
                 } else {
                     print("Standing down, sire.")
-                    _ = pieceSelector(piece: nil)
+                    _ = pieceSelector(piece: currentBoard.boardState()[selectedPos] as? ChessPiece)
                 }
             } else {
                 if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {

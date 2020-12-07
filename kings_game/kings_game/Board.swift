@@ -22,11 +22,14 @@ class Board {
     let center : CGPoint
     var allObjects : [ChessObject] = []
     var tiles : [Position:Tile] = [:]
+    var triggers : [Int:Void]
+    
     
     init(at center: CGPoint, objects: [ChessObject], tileSize: CGFloat) {
         self.center = center
         self.tileSize = tileSize
         self.allObjects = objects
+        self.triggers = [:]
     }
     
     //Return dictionary of positions to lists of objects
@@ -249,8 +252,16 @@ class Board {
             }
         }
         
+//        //Check for en passant
+//        for dir in getPawnHorizontals(direction: piece.direction){
+//            let tempPos = translatePosition(currentPos, dir, 1)
+//            if (currentBoard[tempPos] as! ChessPiece) && !solidTile(at: tempPos){
+//                positionOptions.append(tempPos)
+//            }
+//        }
+//
         var range = 1
-        if !piece.moved {
+        if piece.numMoves == 0 {
             range = 2
         }
         
@@ -296,6 +307,21 @@ class Board {
         }
     }
     
+    func getPawnHorizontals(direction: Direction) -> [Direction]{
+        switch direction {
+        case .NORTH:
+            return [.EAST, .WEST]
+        case .EAST:
+            return [.NORTH, .SOUTH]
+        case .SOUTH:
+            return [.EAST, .WEST]
+        case .WEST:
+            return [.NORTH, .SOUTH]
+        default:
+            return []
+        }
+    }
+    
     func movePiece(piece: ChessPiece, pos: Position) -> Bool{
         if let takenPiece = boardState()[pos] as? ChessPiece{
             if takenPiece.faction != piece.faction{
@@ -315,7 +341,7 @@ class Board {
     }
     //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?
     func capturePiece(_ piece: ChessPiece){
-        print("captured",piece.info())
+        print("Captured",piece.info())
         if piece.type == .KING{
             print(gameTicker)
         }
