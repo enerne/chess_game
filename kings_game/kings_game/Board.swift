@@ -131,7 +131,9 @@ class Board {
         case .BISHOP:
             positionOptions += testBishop(pos: pos)
         case .KNIGHT:
-            print("Knights have no horses yet.")
+            if let piece = obj as? ChessPiece {
+                positionOptions += testKnight(piece: piece)
+            }
         case .ROOK:
             positionOptions += testRook(pos: pos)
         case .QUEEN:
@@ -152,7 +154,7 @@ class Board {
     func testDirection(direction: Direction, position: Position, range: Int?) -> [Position] {
         let maxTestingRange = 100
         var validPositions : [Position] = []
-        var currentPos = getNewPosition(position, direction, 1)
+        var currentPos = translatePosition(position, direction, 1)
         let currentBoard = boardState()
         
         while (validPositions.count < range ?? maxTestingRange) && (tiles[currentPos] != nil){
@@ -160,7 +162,7 @@ class Board {
             if currentBoard[currentPos] != nil { //If a piece is reached, stop there
                 return validPositions
             }
-            currentPos = getNewPosition(currentPos, direction, 1)
+            currentPos = translatePosition(currentPos, direction, 1)
         }
         return validPositions
     }
@@ -208,13 +210,13 @@ class Board {
     //Pawn range -- Takes piece rather than position because pawn is complicated
     func testPawn(piece: ChessPiece) -> [Position] {
         var positionOptions : [Position] = []
-        let maxTestingRange = 100
         var currentPos = piece.coordinates
         let currentBoard = boardState()
         
+        //Check for diagonal attacks
         for dir in getPawnDiagonals(direction: piece.direction){
-            let tempPos = getNewPosition(currentPos, dir, 1)
-            if let piece = currentBoard[tempPos] as? ChessPiece{
+            let tempPos = translatePosition(currentPos, dir, 1)
+            if (currentBoard[tempPos] as? ChessPiece) != nil{
                 positionOptions.append(tempPos)
             }
         }
@@ -224,15 +226,31 @@ class Board {
             range = 2
         }
         
-        for i in 1...range{
-            let tempPos = getNewPosition(currentPos, piece.direction, 1)
-            if currentBoard[tempPos] == nil{
+        //Check for open forward spaces
+        for _ in 1...range{
+            let tempPos = translatePosition(currentPos, piece.direction, 1)
+            if currentBoard[tempPos] == nil && tiles[tempPos] != nil {
                 positionOptions.append(tempPos)
                 currentPos = tempPos
             } else {
                 return positionOptions
             }
         }
+        return positionOptions
+    }
+    //Knight range
+    func testKnight(piece: ChessPiece) -> [Position] {
+        var positionOptions : [Position] = []
+        var currentPos = piece.coordinates
+        let currentBoard = boardState()
+        
+        for disp in [[1,2],[1,-2],[-1,2],[-1,-2],[2,1],[2,-1],[-2,1],[-2,-1]]{
+            let tempPos = displacePosition(currentPos, row: disp[0], col: disp[1], height: 0)
+            if tiles[tempPos] != nil {
+                positionOptions.append(tempPos)
+            }
+        }
+        
         return positionOptions
     }
     
@@ -269,12 +287,13 @@ class Board {
         print("captured",piece.info())
         piece.captured = true
         piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
-        piece.sprite.zPosition -= 10 //TODO: REMOVEFROMPARENT IS CLEANER BUT HAS TO BE DONE IN SCENE
+        //piece.sprite.zPosition -= 10 //REMOVEFROMPARENT IS CLEANER, but this hides them the same way
+        piece.sprite.removeFromParent()
     }
     
     //Returns given (position) but moved (distance) tiles towards (direction)
     //TODO: Doesn't account for Z yet
-    func getNewPosition(_ position: Position, _ direction: Direction, _ distance: Int) -> Position {
+    func translatePosition(_ position: Position, _ direction: Direction, _ distance: Int) -> Position {
         var currentPos = position
         switch direction {
         case .NORTH:
@@ -301,6 +320,14 @@ class Board {
             break
         }
         return currentPos
+    }
+    
+    func displacePosition(_ position: Position, row: Int, col: Int, height: Int) -> Position {
+        var pos = position
+        pos.row += row
+        pos.col += col
+        pos.height += height
+        return pos
     }
     //func getThreats() -> [ChessObject] {//Maybe change to chessPiece?
     //}
