@@ -14,7 +14,7 @@ class GameScene: SKScene {
     var origin: CGPoint!
     var currentPoint: CGPoint!
     var tileSize: CGFloat!
-    
+    var playingFactions : [Faction] = [.WHITE,.BLACK]
     let screenSize: CGRect = UIScreen.main.bounds
     
     let factionSprites: [Faction: String] = [.WHITE: "white", .BLACK: "black"]
@@ -30,7 +30,8 @@ class GameScene: SKScene {
         // create board
         origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
-        currentBoard.buildBasicBoard()
+        //currentBoard.buildBasicBoard()
+        currentBoard.buildPitBoard()
         currentBoard.setTraditionally()
         currentBoard.setPieceSizeAndPosition()
         
@@ -41,6 +42,8 @@ class GameScene: SKScene {
             addChild(obj.sprite)
         }
     }
+    
+    
     
     
     func touchDown(atPoint pos : CGPoint) {
@@ -55,23 +58,25 @@ class GameScene: SKScene {
                 if currentBoard.getOptions(obj: selectedPiece!).keys.contains(selectedPos) {
                     if currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos) {
                         print("Onwards.")
+                        selectedPiece = nil
+                    }else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
+                        selectedPiece = piece
+                        print("\(piece.pieceName) chosen.")
                     } else {
-                        print("I don't think he's a spy...")
+                        print("Let me take his place.")
+                        selectedPiece = nil
                     }
                 } else if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
-                    //Touched same piece, change nothing
-                    print("At your command, sire.")
+                    selectedPiece = piece
+                    print("\(piece.pieceName) chosen.")
                 } else {
-                    print("Standing down, sire")
+                    print("Standing down, sire.")
                     selectedPiece = nil
                 }
             } else {
                 if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
                     selectedPiece = piece
                     print("\(piece.pieceName) chosen.")
-                } else {
-                    print("Standing down, sire.")
-                    selectedPiece = nil
                 }
             }
         }

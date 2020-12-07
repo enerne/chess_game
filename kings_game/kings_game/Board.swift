@@ -88,7 +88,7 @@ class Board {
     func buildBasicBoard() {
         var white = true
         var currentPoint = center
-        for rank in 1...8 {
+        for rank in 1...8 { //TODO: Adding wall to middle soon
             for file in 1...8 {
                 let tile : Tile
                 if white {
@@ -101,10 +101,40 @@ class Board {
                 tile.sprite.size = CGSize(width: tileSize, height: tileSize)
                 tile.sprite.zRotation = CGFloat(Double.pi)/2.0 * CGFloat(Double(Int.random(in: 0...3)))
                 tile.sprite.zPosition = -1
-
+                
                 currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
                 white = !white
                 tiles[Position(row: rank, col: file, height: 0)] = tile
+            }
+            currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
+            white = !white
+        }
+    }
+    
+    func buildPitBoard() {
+        var white = true
+        var currentPoint = center
+        for rank in 1...8 { //TODO: Adding wall to middle soon
+            for file in 1...8 {
+                let tile : Tile
+                if rank > 3 && rank < 6 && file > 3 && file < 6 {
+                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .WALL)
+                } else {
+                    if white {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                    } else {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                    }
+                }
+                tile.sprite.position = currentPoint
+                tile.sprite.size = CGSize(width: tileSize, height: tileSize)
+                tile.sprite.zRotation = CGFloat(Double.pi)/2.0 * CGFloat(Double(Int.random(in: 0...3)))
+                tile.sprite.zPosition = -1
+                
+                currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
+                white = !white
+                tiles[Position(row: rank, col: file, height: 0)] = tile
+                
             }
             currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
             white = !white
@@ -125,15 +155,11 @@ class Board {
         case .OBJECT:
             print("Object has no options.")
         case .PAWN:
-            if let piece = obj as? ChessPiece {
-                positionOptions += testPawn(piece: piece)
-            }
+            if let piece = obj as? ChessPiece { positionOptions += testPawn(piece: piece) }
         case .BISHOP:
             positionOptions += testBishop(pos: pos)
         case .KNIGHT:
-            if let piece = obj as? ChessPiece {
-                positionOptions += testKnight(piece: piece)
-            }
+            if let piece = obj as? ChessPiece { positionOptions += testKnight(piece: piece) }
         case .ROOK:
             positionOptions += testRook(pos: pos)
         case .QUEEN:
@@ -169,7 +195,6 @@ class Board {
     //Rook range
     func testRook(pos: Position) -> [Position] {
         var positionOptions = testDirection(direction: .NORTH, position: pos, range: nil)
-        print(positionOptions)
         positionOptions += testDirection(direction: .EAST, position: pos, range: nil)
         positionOptions += testDirection(direction: .SOUTH, position: pos, range: nil)
         positionOptions += testDirection(direction: .WEST, position: pos, range: nil)
@@ -241,7 +266,7 @@ class Board {
     //Knight range
     func testKnight(piece: ChessPiece) -> [Position] {
         var positionOptions : [Position] = []
-        var currentPos = piece.coordinates
+        let currentPos = piece.coordinates
         let currentBoard = boardState()
         
         for disp in [[1,2],[1,-2],[-1,2],[-1,-2],[2,1],[2,-1],[-2,1],[-2,-1]]{
