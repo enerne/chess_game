@@ -23,6 +23,8 @@ class GameScene: SKScene {
 
     var currentBoard: Board!
     
+    var selectedPiece : ChessPiece?
+    
     override func didMove(to view: SKView) {
         
         // create board
@@ -47,15 +49,40 @@ class GameScene: SKScene {
 //            print("clicked \(name)")
 //        }
         
-        if let piece = currentBoard.getClickedNode(from: node) as? ChessPiece{
-            for opt in currentBoard.getOptions(obj: piece) {
-                if let obj = opt.value{
-                    print(obj.info())
+        
+        if let selectedPos = currentBoard.getClickedPosition(from: node) {
+            print(selectedPos)
+            if selectedPiece != nil{
+                if currentBoard.getOptions(obj: selectedPiece!).keys.contains(selectedPos) {
+                    currentBoard.movePiece(piece: selectedPiece!, pos: selectedPos)
                 } else {
-                    print(opt.key,"nil")
+                    print("nil selected")
+                    selectedPiece = nil
+                }
+            } else {
+                if let piece = currentBoard.boardState()[selectedPos] as? ChessPiece {
+                    selectedPiece = piece
+                    print("\(piece.info()) selected")
+                } else {
+                    print("nil selected")
+                    selectedPiece = nil
                 }
             }
         }
+//        if let piece = currentBoard.getClickedObject(from: node) as? ChessPiece{
+//            if selectedPiece != nil {
+//                selectedPiece = piece
+//            } else {
+//                for opt in currentBoard.getOptions(obj: selectedPiece) {
+//                    if let obj = opt.value{
+//                        print(obj.info())
+//                    } else {
+//                        print(opt.key,"nil")
+//                    }
+//                }
+//        } else {
+//            selectedPiece = nil
+//        }
         
     }
     

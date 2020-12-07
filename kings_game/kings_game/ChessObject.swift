@@ -71,7 +71,7 @@ class ChessObject {
     
     func moveObject(to coord: Position, point: CGPoint) {
         self.coordinates = coord
-        self.sprite.run(SKAction.move(to: point, duration: 1))
+        self.sprite.run(SKAction.move(to: point, duration: 0.5))
     }
     
     func info() -> String{

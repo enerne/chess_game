@@ -208,6 +208,20 @@ class Board {
         return positionOptions
     }
     
+    func movePiece(piece: ChessPiece, pos: Position) {
+        if let takenPiece = boardState()[pos] as? ChessPiece{
+            capturePiece(takenPiece)
+        }
+        piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
+    }
+    //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?
+    func capturePiece(_ piece: ChessPiece){
+        print("captured",piece.info())
+        piece.captured = true
+        piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
+        piece.sprite.zPosition -= 10 //TODO: REMOVEFROMPARENT IS CLEANER BUT HAS TO BE DONE IN SCENE
+    }
+    
     //Returns given (position) but moved (distance) tiles towards (direction)
     //TODO: Doesn't account for Z yet
     func getNewPosition(_ position: Position, _ direction: Direction, _ distance: Int) -> Position {
@@ -241,11 +255,12 @@ class Board {
     //func getThreats() -> [ChessObject] {//Maybe change to chessPiece?
     //}
     
-    func getClickedNode(from node: SKNode) -> ChessObject? {
+    //Prints information about clicked node, returns it if it is a ChessObject
+    func getClickedObject(from node: SKNode) -> ChessObject? {
         for tile in tiles.values {
             if tile.sprite === node {
                 print("\(tile.info())")
-                break
+                return nil
             }
         }
         for piece in allObjects{
@@ -257,4 +272,18 @@ class Board {
         return nil
     }
     
+    //Returns position of clicked node
+    func getClickedPosition(from node: SKNode) -> Position? {
+        for tile in tiles.values {
+            if tile.sprite === node {
+                return tile.coordinates
+            }
+        }
+        for piece in allObjects{
+            if piece.sprite === node {
+                return piece.coordinates
+            }
+        }
+        return nil
+    }
 }

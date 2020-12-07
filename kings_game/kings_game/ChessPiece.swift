@@ -18,7 +18,8 @@ class ChessPiece : ChessObject{
     //might need to move to ChessObject!
     let pieceName : String //Spritename generated from faction and type
     var direction : Direction
-    
+    var captured = false
+
     init(at pos: Position, faction: Faction, type: PieceType) {
         self.faction = faction
         
