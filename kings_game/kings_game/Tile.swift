@@ -46,11 +46,14 @@ class Tile {
         sprite = SKSpriteNode.init(imageNamed: tileName)
         sprite.name = "\(coordinates.row):\(coordinates.col):\(coordinates.height)"
         
-        highlight = SKSpriteNode(color: UIColor(cgColor: CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)), size: sprite.size)
+//        if color == .WHITE {
+            highlight = SKSpriteNode(color: UIColor(cgColor: CGColor(red: 1.0, green: 0.0, blue: 0.00, alpha: 0.50)), size: sprite.size)
+//
+//        } else {
+//            highlight = SKSpriteNode(color: UIColor(cgColor: CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)), size: sprite.size)
+//        }
         highlight.position = sprite.position
         highlight.zPosition = sprite.zPosition + 1
-        highlight.isHidden = true
-        sprite.addChild(highlight)
     }
     
     func info() -> String{
@@ -60,6 +63,13 @@ class Tile {
     
     func showHighlight(_ b: Bool) {
         print("highlight \(b)")
-        highlight.isHidden = !b
+        if b {
+            if highlight.parent == nil {
+                sprite.addChild(highlight)
+            }
+        } else {
+            print("removal")
+            highlight.removeFromParent()
+        }
     }
 }

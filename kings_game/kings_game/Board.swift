@@ -297,12 +297,16 @@ class Board {
     }
     
     func movePiece(piece: ChessPiece, pos: Position) -> Bool{
+        tiles[piece.coordinates]?.showHighlight(false)
+
         if let takenPiece = boardState()[pos] as? ChessPiece{
             if takenPiece.faction != piece.faction{
                 gameTicker.append("\(moveNumber). \(piece.pieceName) X [\(pos.col):\(pos.row):\(pos.height)]\n")
                 moveNumber += 1
                 capturePiece(takenPiece)
                 piece.moveObject(to: pos, point: (tiles[pos]?.sprite.position)!)
+                
+
                 return true
             } else {
                 return false
@@ -404,5 +408,12 @@ class Board {
             }
         }
         return nil
+    }
+    
+    
+    func clearHighlights() {
+        for tile in tiles.values {
+            tile.showHighlight(false)
+        }
     }
 }
