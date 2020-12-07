@@ -44,11 +44,14 @@ class GameScene: SKScene {
     }
     
     func pieceSelector(piece: ChessPiece?) -> Bool{
+
         if piece == nil {
             selectedPiece = nil
             return false
-        } else if piece!.faction == currentFaction{
+        } else if piece!.faction == currentFaction {
+            
             selectedPiece = piece
+            currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(true)
             return true
         }
         
@@ -67,7 +70,7 @@ class GameScene: SKScene {
         //Get clicked position
         if let selectedPos = currentBoard.getClickedPosition(from: node) {
             if selectedPiece != nil{
-                
+                currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(false)
                 //If currentPiece can move to clicked position
                 if currentBoard.getOptions(obj: selectedPiece!).keys.contains(selectedPos) {
                     
