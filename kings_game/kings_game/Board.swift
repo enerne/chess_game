@@ -58,12 +58,12 @@ class Board {
     
     //------------------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------
-    //                                Piece/Board Setup Funcs
+    //                                Piece Setup Funcs
     //------------------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------
     
     //Fill board with normal pieces at normal coordinates
-    func setTraditionally() {
+    func setTraditionally() -> [Faction] {
         allObjects = []
         for col in 1...8 {
             allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
@@ -88,9 +88,10 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .KNIGHT))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
+        return [.WHITE, .BLACK]
     }
     //Replace knights with jesters
-    func setJesters(){
+    func setJesters() -> [Faction] {
         allObjects = []
         for col in 1...8 {
             allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
@@ -115,16 +116,34 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
+        return [.WHITE, .BLACK]
+    }
+    //Board for testing jesters
+    func setJesterTester() -> [Faction] {
+        allObjects.append(ChessPiece(at: Position(row: 5, col: 5, height: 0), faction: .WHITE, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(row: 9, col: 1, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(row: 9, col: 9, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 9, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(row: 9, col: 5, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(row: 5, col: 9, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(row: 5, col: 1, height: 0), faction: .BLACK, type: .KING))
+        return [.WHITE]
     }
     //Throws an ent into the mix
     func addEnt(at pos:Position){
         allObjects.append(ChessPiece(at: pos, faction: .NEUTRAL, type: .ENT))
     }
-    
+    //------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
+    //                                Board Setup Funcs
+    //------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
     func buildBasicBoard() {
         var white = true
         var currentPoint = center
-        for rank in 1...8 { //TODO: Adding wall to middle soon
+        for rank in 1...8 {
             for file in 1...8 {
                 let tile : Tile
                 if white {
@@ -146,11 +165,70 @@ class Board {
             white = !white
         }
     }
+    func buildJesterTesterBoard() {
+        var white = true
+        var currentPoint = center
+        for rank in 1...9 {
+            for file in 1...9 {
+                let tile : Tile
+                if [[2,3],[2,7],[3,2],[3,4],[3,6],[3,8],[4,3],[4,7],[6,3],[6,7],[7,2],[7,4],[7,6],[7,8],[8,3],[8,7]].contains([rank,file]){
+                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .WALL)
+
+                } else {
+                    if white {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                    } else {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                    }
+                }
+                tile.sprite.position = currentPoint
+                tile.sprite.size = CGSize(width: tileSize, height: tileSize)
+                tile.sprite.zRotation = CGFloat(Double.pi)/2.0 * CGFloat(Double(Int.random(in: 0...3)))
+                tile.sprite.zPosition = -1
+                
+                currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
+                white = !white
+                tiles[Position(row: rank, col: file, height: 0)] = tile
+            }
+            currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
+        }
+    }
+    //Adds random water tiles
+    func buildWetBoard() {
+        var white = true
+        var currentPoint = center
+        for rank in 1...8 {
+            for file in 1...8 {
+                let tile : Tile
+                if Int.random(in: 0...3) == 3 {
+                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .WATER)
+                } else {
+                    if white {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                    } else {
+                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                    }
+                }
+                
+                tile.sprite.position = currentPoint
+                tile.sprite.size = CGSize(width: tileSize, height: tileSize)
+                tile.sprite.zRotation = CGFloat(Double.pi)/2.0 * CGFloat(Double(Int.random(in: 0...3)))
+                tile.sprite.zPosition = -1
+                
+                currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
+                white = !white
+                tiles[Position(row: rank, col: file, height: 0)] = tile
+            }
+            currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
+            white = !white
+        }
+    }
+    
     
     func buildPillarBoard() {
         var white = true
         var currentPoint = center
-        for rank in 1...8 { //TODO: Adding wall to middle soon
+        for rank in 1...8 {
             for file in 1...8 {
                 let tile : Tile
                 if rank > 3 && rank < 6 && file > 3 && file < 6 {
@@ -180,7 +258,7 @@ class Board {
     func buildHolesBoard() {
         var white = true
         var currentPoint = center
-        for rank in 1...8 { //TODO: Adding wall to middle soon
+        for rank in 1...8 {
             for file in 1...8 {
                 let tile : Tile
                 if [3,6].contains(rank) && [3,6].contains(file) {
@@ -216,7 +294,7 @@ class Board {
     //------------------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------
     
-    //Returns a dictionary using all positions that the piece can 'move to' (including friendly/enemy squares that can be defended/attacked). Piece logic is in funcs below.
+    //Returns a dictionary of all positions that the piece can 'move to' (including friendly/enemy squares that can be defended/attacked). Piece logic is in funcs below.
     func getOptions(obj: ChessObject) -> [Position:ChessObject?]{
         var options: [Position:ChessObject?] = [:]
         let pos = obj.coordinates

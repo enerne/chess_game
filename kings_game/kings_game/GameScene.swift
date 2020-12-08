@@ -30,10 +30,13 @@ class GameScene: SKScene {
         origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
         //currentBoard.buildBasicBoard()
+        //currentBoard.buildWetBoard()
+        currentBoard.buildJesterTesterBoard()
         //currentBoard.buildPillarBoard()
-        currentBoard.buildHolesBoard()
-        currentBoard.setTraditionally()
-        //currentBoard.setJesters()
+        //currentBoard.buildHolesBoard()
+        //playingFactions = currentBoard.setTraditionally()
+        //playingFactions = currentBoard.setJesters()
+        playingFactions = currentBoard.setJesterTester()
         
         //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
         //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
@@ -46,22 +49,23 @@ class GameScene: SKScene {
         for obj in currentBoard.allObjects{
             addChild(obj.sprite)
         }
+        currentFaction = playingFactions[0]
     }
     
     func pieceSelector(piece: ChessPiece?) -> Bool{
         if piece == nil {
             selectedPiece = nil
             return false
-        } else if piece!.faction == currentFaction {
             
+        } else if piece!.faction == currentFaction {
             selectedPiece = piece
             currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(true)
             print("\(piece!.pieceName) chosen.")
             return true
+        } else {
+            print("Time for \(ChessPiece.factionSprites[currentFaction]!) to act.")
+            return false
         }
-        
-        print("Time for \(ChessPiece.factionSprites[currentFaction]!) to act.")
-        return false
     }
     
     //Changing currentFaction code
