@@ -30,13 +30,13 @@ class GameScene: SKScene {
         origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
         //currentBoard.buildBasicBoard()
-        //currentBoard.buildWetBoard()
-        currentBoard.buildJesterTesterBoard()
+        currentBoard.buildWetBoard()
+//        currentBoard.buildJesterTesterBoard()
         //currentBoard.buildPillarBoard()
         //currentBoard.buildHolesBoard()
-        //playingFactions = currentBoard.setTraditionally()
+        playingFactions = currentBoard.setTraditionally()
         //playingFactions = currentBoard.setJesters()
-        playingFactions = currentBoard.setJesterTester()
+//        playingFactions = currentBoard.setJesterTester()
         
         //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
         //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
