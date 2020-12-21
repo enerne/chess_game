@@ -15,17 +15,20 @@ enum TileTerrain { // Only TILE currently implemented, others are placeholder
          SAND,
          FIRE,
          WALL,
+         BRIDGE,
+         RAMP,
          HOLE
 }
 
 class Tile {
     //Maybe remove colorsprites, kinda wack and illogical
     static let colorSprites: [Faction: String] = [.WHITE: "white_", .BLACK: "black_", .NEUTRAL: ""]
-    static let tileSprites: [TileTerrain: String] = [.TILE: "tile", .FOREST: "forest", .WATER: "water", .SAND: "sand", .FIRE: "fire", .WALL: "wall", .HOLE: "hole"]
+    static let tileSprites: [TileTerrain: String] = [.TILE: "tile", .FOREST: "forest", .WATER: "water", .SAND: "sand", .FIRE: "fire", .WALL: "wall", .HOLE: "hole", .RAMP: "stair_tile"]
     
     var sprite : SKSpriteNode!
     var coordinates : Position
     var color : Faction? // Maybe remove
+    var direction: Direction?
     var terrain : TileTerrain
     var tileName : String
     var blocked : Bool
