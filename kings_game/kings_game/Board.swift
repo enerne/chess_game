@@ -12,6 +12,8 @@ import SpriteKit
 import GameplayKit
 
 class Board {
+    let center : CGPoint
+
     let columns = 8
     let rows = 8
     
@@ -19,7 +21,8 @@ class Board {
     var gameTicker = ""
     var moveNumber = 1
     
-    let center : CGPoint
+    var playingFactions : [Faction] = []
+
     var allObjects : [ChessObject] = []
     var tiles : [Position:Tile] = [:]
     var triggers : [Int:Void]

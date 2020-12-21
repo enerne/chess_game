@@ -18,7 +18,7 @@ class GameScene: SKScene {
     
     //Could do [(Faction:Bool)] or store playerFaction(s) to determine if they are player controlled
     let playerFaction : Faction = .WHITE // Change to black for jester board!
-    var playingFactions : [Faction] = [.WHITE, .BLACK]
+    var playingFactions : [Faction] = []
     var currentFaction : Faction = .WHITE
     let screenSize: CGRect = UIScreen.main.bounds
 
@@ -40,7 +40,8 @@ class GameScene: SKScene {
         //playingFactions = currentBoard.setJesterTester()
         
         //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
-        //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
+        currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
+        playingFactions.append(.NEUTRAL)
         
         currentBoard.setPieceSizeAndPosition()
         
@@ -72,6 +73,7 @@ class GameScene: SKScene {
     //Changing currentFaction code
     func incrementTurn(){
         currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
+        print("-----",playingFactions.firstIndex(of: currentFaction)!,playingFactions.count)
         if currentFaction != playerFaction { //TODO: Check some player faction variable instead of white only
             makeRandomMove()
         }
