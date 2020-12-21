@@ -68,7 +68,7 @@ class Board {
     //------------------------------------------------------------------------------------------
     
     //Fill board with normal pieces at normal coordinates
-    func setTraditionally() -> [Faction] {
+    func setTraditionally(){
         allObjects = []
         for col in 1...8 {
             allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
@@ -93,10 +93,9 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .KNIGHT))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
-        return [.WHITE, .BLACK]
     }
     //Replace knights with jesters
-    func setJesters() -> [Faction] {
+    func setJesters(){
         allObjects = []
         for col in 1...8 {
             allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
@@ -121,10 +120,9 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
         allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
-        return [.WHITE, .BLACK]
     }
     //Board for testing jesters
-    func setJesterTester() -> [Faction] {
+    func setJesterTester(){
         allObjects.append(ChessPiece(at: Position(row: 5, col: 5, height: 0), faction: .BLACK, type: .JESTER))
         allObjects.append(ChessPiece(at: Position(row: 9, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
         allObjects.append(ChessPiece(at: Position(row: 9, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
@@ -134,7 +132,6 @@ class Board {
         allObjects.append(ChessPiece(at: Position(row: 5, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
         allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KNIGHT))
         allObjects.append(ChessPiece(at: Position(row: 5, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
-        return [.BLACK]
     }
     //Throws an ent into the mix
     func addEnt(at pos:Position){
@@ -535,7 +532,7 @@ class Board {
         
         return true
     }
-    //This should probably be more of a scene thing but its not bad here, we should define a 'captured pieces' position and 'move' them there upon being captured maybe?
+    
     func capturePiece(_ piece: ChessPiece, by faction: Faction){
         print("Captured",piece.info())
         if piece.type == .KING{
@@ -647,15 +644,32 @@ class Board {
     }
     
     // returning [ChessPiece:[Position]] makes more sense but it isnt hashable yet
-    func getAllMoves(for pieces: [ChessPiece]) -> [Position:[Position:ChessObject?]]{
-        var allMoves : [Position:[Position:ChessObject?]] = [:]
+    func getAllOptions(for pieces: [ChessPiece]) -> [Position:[Position:ChessObject?]]{
+        var allOptions : [Position:[Position:ChessObject?]] = [:] //position of piece -> positions it could move to (and optionally the piece there)
         for piece in pieces {
             let options = getOptions(obj: piece)
             if !options.isEmpty {
-                allMoves[piece.coordinates] = options
+                allOptions[piece.coordinates] = options
             }
         }
-        return allMoves
+        return allOptions
+    }
+    
+    func getFactionOptions(for faction: Faction) -> [Position:[Position:ChessObject?]] {
+        return getAllOptions(for: getFactionPieces(for: faction))
+    }
+    
+    //TODO: Currently can fuck up and softlock if the only viable move is to move into an ally square!!!!
+    func updatePlayingFactions(){
+        var factions : [Faction] = []
+        for obj in allObjects {
+            if let piece = obj as? ChessPiece {
+                if !factions.contains(piece.faction) && !getFactionOptions(for: piece.faction).isEmpty {
+                    factions.append(piece.faction)
+                }
+            }
+        }
+        playingFactions = factions
     }
     
     //Returns position of clicked node

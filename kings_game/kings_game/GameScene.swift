@@ -12,13 +12,15 @@ import GameplayKit
 
 class GameScene: SKScene {
 
+    
+    //TODO: BIG TODO!! Move the turn faction shit into board, so we know the current faction and which ones are remaining
+    //playing factions should be updated each turn?
     var origin: CGPoint!
     var currentPoint: CGPoint!
     var tileSize: CGFloat!
     
     //Could do [(Faction:Bool)] or store playerFaction(s) to determine if they are player controlled
     let playerFaction : Faction = .WHITE // Change to black for jester board!
-    var playingFactions : [Faction] = []
     var currentFaction : Faction = .WHITE
     let screenSize: CGRect = UIScreen.main.bounds
 
@@ -35,13 +37,12 @@ class GameScene: SKScene {
         //currentBoard.buildJesterTesterBoard()
         //currentBoard.buildPillarBoard()
         //currentBoard.buildHolesBoard()
-        playingFactions = currentBoard.setTraditionally()
-        //playingFactions = currentBoard.setJesters()
-        //playingFactions = currentBoard.setJesterTester()
+        currentBoard.setTraditionally()
+        //currentBoard.setJesters()
+        //currentBoard.setJesterTester()
         
         //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
         currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
-        playingFactions.append(.NEUTRAL)
         
         currentBoard.setPieceSizeAndPosition()
         
@@ -51,7 +52,7 @@ class GameScene: SKScene {
         for obj in currentBoard.allObjects{
             addChild(obj.sprite)
         }
-        currentFaction = playingFactions[0]
+        currentBoard.updatePlayingFactions()
     }
     
     func pieceSelector(piece: ChessPiece?) -> Bool{
@@ -59,30 +60,34 @@ class GameScene: SKScene {
             selectedPiece = nil
             return false
             
-        } else if piece!.faction == currentFaction {
+        } else if piece!.faction == currentFaction && currentFaction == playerFaction { //TODO: Adapt for multiple playable factions at once?
             selectedPiece = piece
             currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(true)
             print("\(piece!.pieceName) chosen.")
             return true
         } else {
-            print("Time for \(ChessPiece.factionSprites[currentFaction]!) to act.")
+            print("Time for \(ChessPiece.factionSprites[currentFaction]!.dropLast()) to act.")
             return false
         }
     }
     
     //Changing currentFaction code
     func incrementTurn(){
-        currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
-        print("-----",playingFactions.firstIndex(of: currentFaction)!,playingFactions.count)
+        currentBoard.updatePlayingFactions()
+        currentFaction = currentBoard.playingFactions[(currentBoard.playingFactions.firstIndex(of: currentFaction)!+1)%currentBoard.playingFactions.count]
+        print("-----",currentBoard.playingFactions.firstIndex(of: currentFaction)!,currentBoard.playingFactions.count)
         if currentFaction != playerFaction { //TODO: Check some player faction variable instead of white only
-            makeRandomMove()
+            let seconds = 0.5
+            DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+                self.makeRandomMove()
+            }
         }
     }
     
     func makeRandomMove() {
         var moved = false
         while !moved { //at the moment it can try to move into allies and be forced to move again rather than never try that at all
-            let allMoves = currentBoard.getAllMoves(for: currentBoard.getFactionPieces(for: currentFaction))
+            let allMoves = currentBoard.getFactionOptions(for: currentFaction)
             let movingFrom = allMoves.keys.randomElement()!
             let movingTo = (allMoves[movingFrom]?.keys.randomElement())!
             print(movingFrom.col, movingFrom.row)
