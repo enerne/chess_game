@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		750E97AD2591247100B7BC5B /* ChessBot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750E97AC2591247100B7BC5B /* ChessBot.swift */; };
 		753B93C0257CA6CE00DFDA66 /* ChessPiece.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753B93BF257CA6CE00DFDA66 /* ChessPiece.swift */; };
 		753B93C5257CA77000DFDA66 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753B93C4257CA77000DFDA66 /* Board.swift */; };
 		753B93CA257CABE800DFDA66 /* ChessObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753B93C9257CABE800DFDA66 /* ChessObject.swift */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		750E97AC2591247100B7BC5B /* ChessBot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessBot.swift; sourceTree = "<group>"; };
 		753B93BF257CA6CE00DFDA66 /* ChessPiece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessPiece.swift; sourceTree = "<group>"; };
 		753B93C4257CA77000DFDA66 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		753B93C9257CABE800DFDA66 /* ChessObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessObject.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				753B93BF257CA6CE00DFDA66 /* ChessPiece.swift */,
 				753B93C4257CA77000DFDA66 /* Board.swift */,
 				75AF8558257D708D00870F03 /* Tile.swift */,
+				750E97AC2591247100B7BC5B /* ChessBot.swift */,
 				E3BA2E3B257C845A00AA16E6 /* Assets.xcassets */,
 				E3BA2E68257C84B500AA16E6 /* GameScene.swift */,
 				E3BA2E67257C84B500AA16E6 /* GameViewController.swift */,
@@ -280,6 +283,7 @@
 			files = (
 				E3BA2E6C257C84B500AA16E6 /* GameScene.swift in Sources */,
 				E3BA2E6B257C84B500AA16E6 /* GameViewController.swift in Sources */,
+				750E97AD2591247100B7BC5B /* ChessBot.swift in Sources */,
 				753B93C5257CA77000DFDA66 /* Board.swift in Sources */,
 				E3BA2E80257E2A9000AA16E6 /* BoardEditor.swift in Sources */,
 				75AF8559257D708D00870F03 /* Tile.swift in Sources */,

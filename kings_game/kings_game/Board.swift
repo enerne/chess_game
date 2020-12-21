@@ -658,7 +658,7 @@ class Board {
     func getFactionOptions(for faction: Faction) -> [Position:[Position:ChessObject?]] {
         return getAllOptions(for: getFactionPieces(for: faction))
     }
-    
+        
     //TODO: Currently can fuck up and softlock if the only viable move is to move into an ally square!!!!
     func updatePlayingFactions(){
         var factions : [Faction] = []

@@ -21,10 +21,11 @@ class GameScene: SKScene {
     
     //Could do [(Faction:Bool)] or store playerFaction(s) to determine if they are player controlled
     let playerFaction : Faction = .WHITE // Change to black for jester board!
-    var currentFaction : Faction = .WHITE
+    var currentFaction : Faction = .NEUTRAL
     let screenSize: CGRect = UIScreen.main.bounds
 
     var currentBoard: Board!
+    var computerPlayer : ChessBot!
     
     var selectedPiece : ChessPiece?
     
@@ -32,17 +33,16 @@ class GameScene: SKScene {
         // create board
         origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
-        currentBoard.buildBasicBoard()
+        //currentBoard.buildBasicBoard()
         //currentBoard.buildWetBoard()
         //currentBoard.buildJesterTesterBoard()
-        //currentBoard.buildPillarBoard()
+        currentBoard.buildPillarBoard()
         //currentBoard.buildHolesBoard()
         currentBoard.setTraditionally()
         //currentBoard.setJesters()
         //currentBoard.setJesterTester()
-        
         //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
-        currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
+        //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
         
         currentBoard.setPieceSizeAndPosition()
         
@@ -53,13 +53,15 @@ class GameScene: SKScene {
             addChild(obj.sprite)
         }
         currentBoard.updatePlayingFactions()
+        currentFaction = currentBoard.playingFactions[0]
+        
+        computerPlayer = ChessBot(for: currentBoard)
     }
     
     func pieceSelector(piece: ChessPiece?) -> Bool{
         if piece == nil {
             selectedPiece = nil
             return false
-            
         } else if piece!.faction == currentFaction && currentFaction == playerFaction { //TODO: Adapt for multiple playable factions at once?
             selectedPiece = piece
             currentBoard.tiles[selectedPiece!.coordinates]!.showHighlight(true)
@@ -79,23 +81,13 @@ class GameScene: SKScene {
         if currentFaction != playerFaction { //TODO: Check some player faction variable instead of white only
             let seconds = 0.5
             DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                self.makeRandomMove()
+                self.computerPlayer.makeRandomMove(for: self.currentFaction)
+                self.incrementTurn()
             }
         }
     }
     
-    func makeRandomMove() {
-        var moved = false
-        while !moved { //at the moment it can try to move into allies and be forced to move again rather than never try that at all
-            let allMoves = currentBoard.getFactionOptions(for: currentFaction)
-            let movingFrom = allMoves.keys.randomElement()!
-            let movingTo = (allMoves[movingFrom]?.keys.randomElement())!
-            print(movingFrom.col, movingFrom.row)
-            print(movingTo.col, movingTo.row)
-            moved = currentBoard.movePiece(piece: currentBoard.boardState()[movingFrom] as! ChessPiece, pos: movingTo)
-        }
-        incrementTurn()
-    }
+
     
     func touchDown(atPoint pos : CGPoint) {
         let node = self.atPoint(pos)
