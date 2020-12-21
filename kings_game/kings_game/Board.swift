@@ -122,16 +122,16 @@ class Board {
     }
     //Board for testing jesters
     func setJesterTester() -> [Faction] {
-        allObjects.append(ChessPiece(at: Position(row: 5, col: 5, height: 0), faction: .WHITE, type: .JESTER))
-        allObjects.append(ChessPiece(at: Position(row: 9, col: 1, height: 0), faction: .BLACK, type: .KING))
-        allObjects.append(ChessPiece(at: Position(row: 9, col: 9, height: 0), faction: .BLACK, type: .KING))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 9, height: 0), faction: .BLACK, type: .KING))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .BLACK, type: .KING))
-        allObjects.append(ChessPiece(at: Position(row: 9, col: 5, height: 0), faction: .BLACK, type: .KING))
-        allObjects.append(ChessPiece(at: Position(row: 5, col: 9, height: 0), faction: .BLACK, type: .KING))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .BLACK, type: .KING))
-        allObjects.append(ChessPiece(at: Position(row: 5, col: 1, height: 0), faction: .BLACK, type: .KING))
-        return [.WHITE]
+        allObjects.append(ChessPiece(at: Position(row: 5, col: 5, height: 0), faction: .BLACK, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(row: 9, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 9, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 9, col: 5, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 5, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(row: 5, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        return [.BLACK]
     }
     //Throws an ent into the mix
     func addEnt(at pos:Position){
@@ -174,7 +174,7 @@ class Board {
             for file in 1...9 {
                 let tile : Tile
                 if [[2,3],[2,7],[3,2],[3,4],[3,6],[3,8],[4,3],[4,7],[6,3],[6,7],[7,2],[7,4],[7,6],[7,8],[8,3],[8,7]].contains([rank,file]){
-                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .WALL)
+                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .HOLE)
 
                 } else {
                     if white {
@@ -337,9 +337,14 @@ class Board {
         var currentPos = translatePosition(position, direction, 1)
         let currentBoard = boardState()
         
-        while (validPositions.count < range ?? maxTestingRange) && (!solidTile(at: currentPos)){
+        while (validPositions.count < range ?? maxTestingRange){
+            if (solidTile(at: currentPos)) || tiles[currentPos] == nil{ //If a piece is reached or the tile is impassable, stop there
+                return validPositions
+            }
+            
             validPositions.append(currentPos)
-            if currentBoard[currentPos] != nil { //If a piece is reached, stop there
+            
+            if currentBoard[currentPos] != nil{ //If a piece is reached or the tile is impassable, stop there
                 return validPositions
             }
             currentPos = translatePosition(currentPos, direction, 1)
@@ -401,7 +406,6 @@ class Board {
                 }
             }
         }
-        
         return positionOptions
     }
     //Pawn range -- Takes piece rather than position because pawn is complicated
@@ -411,7 +415,7 @@ class Board {
         let currentBoard = boardState()
         
         //Check for diagonal attacks
-        for dir in getPawnDiagonals(direction: piece.direction){
+        for dir in getPawnPeripheral(direction: piece.direction){
             let tempPos = translatePosition(currentPos, dir, 1)
             if (currentBoard[tempPos] as? ChessPiece) != nil && !solidTile(at: tempPos){
                 positionOptions.append(tempPos)
@@ -425,7 +429,7 @@ class Board {
 //                positionOptions.append(tempPos)
 //            }
 //        }
-//
+
         var range = 1
         if piece.numMoves == 0 {
             range = 2
@@ -470,7 +474,7 @@ class Board {
         return positionOptions
     }
     
-    func getPawnDiagonals(direction: Direction) -> [Direction]{
+    func getPawnPeripheral(direction: Direction) -> [Direction]{
         switch direction {
         case .NORTH:
             return [.NORTHEAST, .NORTHWEST]
@@ -485,7 +489,7 @@ class Board {
         }
     }
     
-    func getPawnHorizontals(direction: Direction) -> [Direction]{
+    func getPawnLateral(direction: Direction) -> [Direction]{
         switch direction {
         case .NORTH:
             return [.EAST, .WEST]
@@ -535,7 +539,6 @@ class Board {
             print(gameTicker)
         }
         piece.captured = true
-//        piece.coordinates.height -= 1 //TODO: THIS WILL BREAK SHIT IF WE DO HEIGHT STUFF
         
         // add to capturedObjects
         if let _ = capturedObjects[faction] {
@@ -557,13 +560,13 @@ class Board {
         // remove sprite from parent
         piece.sprite.removeFromParent()
         
-        print(capturedObjects)
+//        print(capturedObjects)
         
     }
     
-    //True if tile should allow pieces to move through it, false if solid
+    //True if false should allow pieces to move through it, true if solid
     func solidTile(at pos: Position) -> Bool {
-        if tiles[pos]?.blocked ?? false {
+        if tiles[pos]?.blocked ?? true {
             return true
         }
         return false
@@ -627,6 +630,31 @@ class Board {
         return nil
     }
     
+    //return all pieces of current faction
+    func getFactionPieces(for faction: Faction) -> [ChessPiece]{
+        var pieces : [ChessPiece] = []
+        for obj in allObjects{
+            if let piece = obj as? ChessPiece {
+                if piece.faction == faction {
+                    pieces.append(piece)
+                }
+            }
+        }
+        return pieces
+    }
+    
+    // returning [ChessPiece:[Position]] makes more sense but it isnt hashable yet
+    func getAllMoves(for pieces: [ChessPiece]) -> [Position:[Position:ChessObject?]]{
+        var allMoves : [Position:[Position:ChessObject?]] = [:]
+        for piece in pieces {
+            let options = getOptions(obj: piece)
+            if !options.isEmpty {
+                allMoves[piece.coordinates] = options
+            }
+        }
+        return allMoves
+    }
+    
     //Returns position of clicked node
     func getClickedPosition(from node: SKNode) -> Position? {
         for tile in tiles.values {
@@ -641,7 +669,6 @@ class Board {
         }
         return nil
     }
-    
     
     func clearHighlights() {
         for tile in tiles.values {

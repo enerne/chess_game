@@ -29,14 +29,14 @@ class GameScene: SKScene {
         // create board
         origin = CGPoint(x: -screenSize.width, y: -screenSize.height/2)
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
-        //currentBoard.buildBasicBoard()
+        currentBoard.buildBasicBoard()
         //currentBoard.buildWetBoard()
-        currentBoard.buildJesterTesterBoard()
+        //currentBoard.buildJesterTesterBoard()
         //currentBoard.buildPillarBoard()
         //currentBoard.buildHolesBoard()
-        //playingFactions = currentBoard.setTraditionally()
+        playingFactions = currentBoard.setTraditionally()
         //playingFactions = currentBoard.setJesters()
-        playingFactions = currentBoard.setJesterTester()
+        //playingFactions = currentBoard.setJesterTester()
         
         //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
         //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
@@ -71,6 +71,22 @@ class GameScene: SKScene {
     //Changing currentFaction code
     func incrementTurn(){
         currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
+        if currentFaction != .WHITE { //TODO: Check some player faction variable instead of white only
+            makeRandomMove()
+        }
+    }
+    
+    func makeRandomMove() {
+        var moved = false
+        while !moved { //at the moment it can try to move into allies and be forced to move again rather than never try that at all
+            let allMoves = currentBoard.getAllMoves(for: currentBoard.getFactionPieces(for: currentFaction))
+            let movingFrom = allMoves.keys.randomElement()!
+            let movingTo = (allMoves[movingFrom]?.keys.randomElement())!
+            print(movingFrom.col, movingFrom.row)
+            print(movingTo.col, movingTo.row)
+            moved = currentBoard.movePiece(piece: currentBoard.boardState()[movingFrom] as! ChessPiece, pos: movingTo)
+        }
+        incrementTurn()
     }
     
     func touchDown(atPoint pos : CGPoint) {
