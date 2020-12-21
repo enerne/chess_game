@@ -17,6 +17,7 @@ class GameScene: SKScene {
     var tileSize: CGFloat!
     
     //Could do [(Faction:Bool)] or store playerFaction(s) to determine if they are player controlled
+    let playerFaction : Faction = .WHITE // Change to black for jester board!
     var playingFactions : [Faction] = [.WHITE, .BLACK]
     var currentFaction : Faction = .WHITE
     let screenSize: CGRect = UIScreen.main.bounds
@@ -71,7 +72,7 @@ class GameScene: SKScene {
     //Changing currentFaction code
     func incrementTurn(){
         currentFaction = playingFactions[(playingFactions.firstIndex(of: currentFaction)!+1)%playingFactions.count]
-        if currentFaction != .WHITE { //TODO: Check some player faction variable instead of white only
+        if currentFaction != playerFaction { //TODO: Check some player faction variable instead of white only
             makeRandomMove()
         }
     }
