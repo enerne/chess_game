@@ -81,7 +81,7 @@ class GameScene: SKScene {
         if currentFaction != playerFaction { //TODO: Check some player faction variable instead of white only
             let seconds = 0.5
             DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                self.computerPlayer.makeRandomMove(for: self.currentFaction)
+                self.computerPlayer.makeBestCapture(for: self.currentFaction)
                 self.incrementTurn()
             }
         }

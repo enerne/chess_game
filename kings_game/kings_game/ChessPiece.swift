@@ -12,7 +12,6 @@ class ChessPiece : ChessObject{
     static let factionSprites: [Faction: String] = [.WHITE: "white_", .BLACK: "black_", .NEUTRAL: ""]
     static let pieceSprites: [PieceType: String] = [.PAWN: "pawn", .BISHOP: "bishop", .KNIGHT: "knight", .ROOK: "rook", .QUEEN: "queen", .KING: "king", .JESTER: "jester", .ENT: "ent"]
     
-    let faction : Faction
     //type stored by ObjectPiece
     
     //might need to move to ChessObject!
@@ -22,7 +21,6 @@ class ChessPiece : ChessObject{
 
 
     init(at pos: Position, faction: Faction, type: PieceType) {
-        self.faction = faction
         
         //hardcoded direction setting
         switch faction {
@@ -38,6 +36,8 @@ class ChessPiece : ChessObject{
         pieceName = ChessPiece.factionSprites[faction]!+ChessPiece.pieceSprites[type]!
         super.init(at: pos, imageName: pieceName, type: type)
         
+        self.faction = faction
+
         if sprite == nil {
             print(pieceName,"SPRITE FAILED TO INITIALIZE")
         }

@@ -41,9 +41,11 @@ enum PieceType {
          JESTER,
          QUEEN,
          KING,
-         OBJECT,
          
-         ENT
+         ENT,
+         
+         OBJECT
+         
 }
 
 enum Faction {
@@ -55,7 +57,8 @@ enum Faction {
 class ChessObject {
     var coordinates = Position()
     var sprite: SKSpriteNode!
-    var type = PieceType.OBJECT
+    var type : PieceType = PieceType.OBJECT
+    var faction : Faction = Faction.NEUTRAL
     var numMoves = 0
     
 
