@@ -23,7 +23,6 @@ class ChessBot {
     }
     
     func makeBestCapture(for faction: Faction) -> Bool {
-        let currentBoard = board.boardState()
         var moved = false
         var allMoves = board.getFactionOptions(for: faction)
         var movingFrom : Position
@@ -33,11 +32,9 @@ class ChessBot {
             movingFrom = allMoves.keys.randomElement()!
             movingTo = (allMoves[movingFrom]?.keys.randomElement())!
             for piecePos in allMoves.keys {
-                print(piecePos)
                 for obj in allMoves[piecePos]!.values {
                     if obj != nil {
                         if obj!.faction != faction && pieceValues[obj!.type] ?? 0 > maxPoints{
-                            print(obj?.type)
                             movingFrom = piecePos
                             movingTo = obj!.coordinates
                             maxPoints = pieceValues[obj!.type]!
