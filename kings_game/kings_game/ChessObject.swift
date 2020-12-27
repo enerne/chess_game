@@ -9,9 +9,8 @@ import SpriteKit
 import GameplayKit
 
 struct Position : Hashable{
-    var row = 0
     var col = 0
-    // In case we do elevation using this
+    var row = 0
     var height = 0
     
     func hash(into hasher: inout Hasher) {
@@ -85,6 +84,6 @@ class ChessObject {
     
     func info() -> String{
         //Forcing unwrap of name, not needed if becomes problem
-        return "\(String(describing: sprite.name!)), [\(coordinates.row):\(coordinates.col):\(coordinates.height)]"
+        return "\(String(describing: sprite.name!)), [\(coordinates.col):\(coordinates.row):\(coordinates.height)]"
     }
 }

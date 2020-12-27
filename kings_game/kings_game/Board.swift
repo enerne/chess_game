@@ -71,67 +71,67 @@ class Board {
     func setTraditionally(){
         allObjects = []
         for col in 1...8 {
-            allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
-            allObjects.append(ChessPiece(at: Position(row: 7, col: col, height: 0), faction: .BLACK, type: .PAWN))
+            allObjects.append(ChessPiece(at: Position(col: col, row: 2, height: 0), faction: .WHITE, type: .PAWN))
+            allObjects.append(ChessPiece(at: Position(col: col, row: 7, height: 0), faction: .BLACK, type: .PAWN))
         }
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 3, height: 0), faction: .WHITE, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 6, height: 0), faction: .WHITE, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 8, height: 0), faction: .WHITE, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 4, height: 0), faction: .WHITE, type: .QUEEN))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KING))
+        allObjects.append(ChessPiece(at: Position(col: 3, row: 1, height: 0), faction: .WHITE, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 6, row: 1, height: 0), faction: .WHITE, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 1, row: 1, height: 0), faction: .WHITE, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 8, row: 1, height: 0), faction: .WHITE, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 2, row: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 7, row: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 4, row: 1, height: 0), faction: .WHITE, type: .QUEEN))
+        allObjects.append(ChessPiece(at: Position(col: 5, row: 1, height: 0), faction: .WHITE, type: .KING))
         // ^       ^     |       |
         // | WHITE | - - | BLACK |
         // |       |     v       v
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 3, height: 0), faction: .BLACK, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 6, height: 0), faction: .BLACK, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 1, height: 0), faction: .BLACK, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 8, height: 0), faction: .BLACK, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 2, height: 0), faction: .BLACK, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(col: 3, row: 8, height: 0), faction: .BLACK, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 6, row: 8, height: 0), faction: .BLACK, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 1, row: 8, height: 0), faction: .BLACK, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 8, row: 8, height: 0), faction: .BLACK, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 2, row: 8, height: 0), faction: .BLACK, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 7, row: 8, height: 0), faction: .BLACK, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 4, row: 8, height: 0), faction: .BLACK, type: .QUEEN))
+        allObjects.append(ChessPiece(at: Position(col: 5, row: 8, height: 0), faction: .BLACK, type: .KING))
     }
     //Replace knights with jesters
     func setJesters(){
         allObjects = []
         for col in 1...8 {
-            allObjects.append(ChessPiece(at: Position(row: 2, col: col, height: 0), faction: .WHITE, type: .PAWN))
-            allObjects.append(ChessPiece(at: Position(row: 7, col: col, height: 0), faction: .BLACK, type: .PAWN))
+            allObjects.append(ChessPiece(at: Position(col: col, row: 2, height: 0), faction: .WHITE, type: .PAWN))
+            allObjects.append(ChessPiece(at: Position(col: col, row: 7, height: 0), faction: .BLACK, type: .PAWN))
         }
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 3, height: 0), faction: .WHITE, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 6, height: 0), faction: .WHITE, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 8, height: 0), faction: .WHITE, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 2, height: 0), faction: .WHITE, type: .JESTER))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 7, height: 0), faction: .WHITE, type: .JESTER))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 4, height: 0), faction: .WHITE, type: .QUEEN))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KING))
+        allObjects.append(ChessPiece(at: Position(col: 3, row: 1, height: 0), faction: .WHITE, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 6, row: 1, height: 0), faction: .WHITE, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 1, row: 1, height: 0), faction: .WHITE, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 8, row: 1, height: 0), faction: .WHITE, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 2, row: 1, height: 0), faction: .WHITE, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(col: 7, row: 1, height: 0), faction: .WHITE, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(col: 4, row: 1, height: 0), faction: .WHITE, type: .QUEEN))
+        allObjects.append(ChessPiece(at: Position(col: 5, row: 1, height: 0), faction: .WHITE, type: .KING))
         // ^       ^     |       |
         // | WHITE | - - | BLACK |
         // |       |     v       v
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 3, height: 0), faction: .BLACK, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 6, height: 0), faction: .BLACK, type: .BISHOP))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 1, height: 0), faction: .BLACK, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 8, height: 0), faction: .BLACK, type: .ROOK))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 2, height: 0), faction: .BLACK, type: .JESTER))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 7, height: 0), faction: .BLACK, type: .JESTER))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 4, height: 0), faction: .BLACK, type: .QUEEN))
-        allObjects.append(ChessPiece(at: Position(row: 8, col: 5, height: 0), faction: .BLACK, type: .KING))
+        allObjects.append(ChessPiece(at: Position(col: 3, row: 8, height: 0), faction: .BLACK, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 6, row: 8, height: 0), faction: .BLACK, type: .BISHOP))
+        allObjects.append(ChessPiece(at: Position(col: 1, row: 8, height: 0), faction: .BLACK, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 8, row: 8, height: 0), faction: .BLACK, type: .ROOK))
+        allObjects.append(ChessPiece(at: Position(col: 2, row: 8, height: 0), faction: .BLACK, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(col: 7, row: 8, height: 0), faction: .BLACK, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(col: 4, row: 8, height: 0), faction: .BLACK, type: .QUEEN))
+        allObjects.append(ChessPiece(at: Position(col: 5, row: 8, height: 0), faction: .BLACK, type: .KING))
     }
     //Board for testing jesters
     func setJesterTester(){
-        allObjects.append(ChessPiece(at: Position(row: 5, col: 5, height: 0), faction: .BLACK, type: .JESTER))
-        allObjects.append(ChessPiece(at: Position(row: 9, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 9, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 9, col: 5, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 5, col: 9, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 1, col: 5, height: 0), faction: .WHITE, type: .KNIGHT))
-        allObjects.append(ChessPiece(at: Position(row: 5, col: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 5, row: 5, height: 0), faction: .BLACK, type: .JESTER))
+        allObjects.append(ChessPiece(at: Position(col: 1, row: 9, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 9, row: 9, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 9, row: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 1, row: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 5, row: 9, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 9, row: 5, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 5, row: 1, height: 0), faction: .WHITE, type: .KNIGHT))
+        allObjects.append(ChessPiece(at: Position(col: 1, row: 5, height: 0), faction: .WHITE, type: .KNIGHT))
     }
     //Throws an ent into the mix
     func addEnt(at pos:Position){
@@ -149,9 +149,9 @@ class Board {
             for file in 1...8 {
                 let tile : Tile
                 if white {
-                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                    tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .WHITE, terrain: .TILE)
                 } else {
-                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                    tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .BLACK, terrain: .TILE)
                 }
                 
                 tile.sprite.position = currentPoint
@@ -161,7 +161,7 @@ class Board {
                 
                 currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
                 white = !white
-                tiles[Position(row: rank, col: file, height: 0)] = tile
+                tiles[Position(col: file, row: rank, height: 0)] = tile
             }
             currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
             white = !white
@@ -174,13 +174,13 @@ class Board {
             for file in 1...9 {
                 let tile : Tile
                 if [[2,3],[2,7],[3,2],[3,4],[3,6],[3,8],[4,3],[4,7],[6,3],[6,7],[7,2],[7,4],[7,6],[7,8],[8,3],[8,7]].contains([rank,file]){
-                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .HOLE)
+                    tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .NEUTRAL, terrain: .HOLE)
 
                 } else {
                     if white {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .WHITE, terrain: .TILE)
                     } else {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .BLACK, terrain: .TILE)
                     }
                 }
                 tile.sprite.position = currentPoint
@@ -190,7 +190,7 @@ class Board {
                 
                 currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
                 white = !white
-                tiles[Position(row: rank, col: file, height: 0)] = tile
+                tiles[Position(col: file, row: rank, height: 0)] = tile
             }
             currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
         }
@@ -203,12 +203,12 @@ class Board {
             for file in 1...8 {
                 let tile : Tile
                 if Int.random(in: 0...3) == 3 {
-                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .WATER)
+                    tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .NEUTRAL, terrain: .WATER)
                 } else {
                     if white {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .WHITE, terrain: .TILE)
                     } else {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .BLACK, terrain: .TILE)
                     }
                 }
                 
@@ -219,7 +219,7 @@ class Board {
                 
                 currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
                 white = !white
-                tiles[Position(row: rank, col: file, height: 0)] = tile
+                tiles[Position(col: file, row: rank, height: 0)] = tile
             }
             currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
             white = !white
@@ -234,12 +234,12 @@ class Board {
             for file in 1...8 {
                 let tile : Tile
                 if rank > 3 && rank < 6 && file > 3 && file < 6 {
-                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .WALL)
+                    tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .NEUTRAL, terrain: .WALL)
                 } else {
                     if white {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .WHITE, terrain: .TILE)
                     } else {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .BLACK, terrain: .TILE)
                     }
                 }
                 tile.sprite.position = currentPoint
@@ -249,7 +249,7 @@ class Board {
                 
                 currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
                 white = !white
-                tiles[Position(row: rank, col: file, height: 0)] = tile
+                tiles[Position(col: file, row: rank, height: 0)] = tile
                 
             }
             currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
@@ -264,12 +264,12 @@ class Board {
             for file in 1...8 {
                 let tile : Tile
                 if [3,6].contains(rank) && [3,6].contains(file) {
-                    tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .NEUTRAL, terrain: .HOLE)
+                    tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .NEUTRAL, terrain: .HOLE)
                 } else {
                     if white {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .WHITE, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .WHITE, terrain: .TILE)
                     } else {
-                        tile = Tile(pos: Position(row: rank, col: file, height: 0), color: .BLACK, terrain: .TILE)
+                        tile = Tile(pos: Position(col: file, row: rank, height: 0), color: .BLACK, terrain: .TILE)
                     }
                 }
                 tile.sprite.position = currentPoint
@@ -279,7 +279,7 @@ class Board {
                 
                 currentPoint = CGPoint(x: currentPoint.x + tileSize, y: currentPoint.y)
                 white = !white
-                tiles[Position(row: rank, col: file, height: 0)] = tile
+                tiles[Position(col: file, row: rank, height: 0)] = tile
                 
             }
             currentPoint = CGPoint(x: center.x, y: currentPoint.y + tileSize)
@@ -330,7 +330,7 @@ class Board {
     }
     
     //Returns all viable tiles in the given direction including first piece
-    //TODO: Should this have x-ray and return all pieces so we can adapt it to weird abilities and stuff
+    //TODO: Make alternate version with x-ray that returns all pieces so we can adapt it to weird abilities?
     func testDirection(direction: Direction, position: Position, range: Int?) -> [Position] {
         let maxTestingRange = 100
         var validPositions : [Position] = []

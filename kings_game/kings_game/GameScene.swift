@@ -35,19 +35,18 @@ class GameScene: SKScene {
         currentBoard = Board(at: origin, objects: [], tileSize: screenSize.width / 4)
         
         // --- Build Board ---
-        //currentBoard.buildBasicBoard()
+        currentBoard.buildBasicBoard()
         //currentBoard.buildWetBoard()
-        currentBoard.buildJesterTesterBoard()
+        //currentBoard.buildJesterTesterBoard()
         //currentBoard.buildPillarBoard()
         //currentBoard.buildHolesBoard()
         
         // --- Set Pieces ---
-        //currentBoard.setTraditionally()
+        currentBoard.setTraditionally()
         //currentBoard.setJesters()
-        currentBoard.setJesterTester()
+        //currentBoard.setJesterTester()
         
         // --- Set Misc Pieces ---
-        //Add .NEUTRAL to playingFactions to control ent, taking ent will softlock because there is no way for ne
         //currentBoard.addEnt(at: Position(row: 4, col: 4, height: 0))
         
         currentBoard.setPieceSizeAndPosition()
@@ -66,7 +65,7 @@ class GameScene: SKScene {
         if currentFaction != playerFaction { // If player is not first, let the computer start
             let seconds = 1.0
             DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                self.computerPlayer.makeBestCapture(for: self.currentFaction)
+                _ = self.computerPlayer.makeBestCapture(for: self.currentFaction)
                 self.incrementTurn()
             }
         }
@@ -92,11 +91,10 @@ class GameScene: SKScene {
         currentBoard.updatePlayingFactions()
         if currentBoard.playingFactions.count > 0 {
             currentFaction = currentBoard.playingFactions[(currentBoard.playingFactions.firstIndex(of: currentFaction)!+1)%currentBoard.playingFactions.count] //If no moves are possible this will break! which is fine for now I guess
-            print("-----",currentBoard.playingFactions.firstIndex(of: currentFaction)!,currentBoard.playingFactions.count)
             if currentFaction != playerFaction { //TODO: Check some player faction variable instead of white only
                 let seconds = 0.5
                 DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-                    self.computerPlayer.makeBestCapture(for: self.currentFaction)
+                    _ = self.computerPlayer.makeBestCapture(for: self.currentFaction)
                     self.incrementTurn()
                 }
             }

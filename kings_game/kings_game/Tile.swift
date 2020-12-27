@@ -64,7 +64,7 @@ class Tile {
     
     func info() -> String{
         //Forcing unwrap of name, not needed if becomes problem
-        return "\(String(describing: sprite.name!)), [\(coordinates.row):\(coordinates.col):\(coordinates.height)]."
+        return "\(String(describing: sprite.name!)), [\(coordinates.col):\(coordinates.row):\(coordinates.height)]."
     }
     
     func showHighlight(_ b: Bool) {
